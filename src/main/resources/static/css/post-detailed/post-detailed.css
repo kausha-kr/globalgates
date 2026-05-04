@@ -1337,6 +1337,13 @@ div.postHashtags {
     z-index: 1;
 }
 
+/* 스레드 카드의 본문/미디어/액션바를 아바타 폭(40)+갭(12)=52px만큼 들여,
+   .post-detail-thread-group::before로 그려지는 세로 연결선(left:35px)과 겹쳐
+   왼쪽 글자가 잘려 보이지 않도록 한다. 헤더(아바타·이름·시간)는 그대로 둔다. */
+.post-detail-thread-item .postBody > *:not(.postHeader) {
+    padding-left: 52px;
+}
+
 .post-detail-actions--reply {
     display: flex;
     align-items: center;

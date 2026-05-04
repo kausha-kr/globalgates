@@ -16,6 +16,7 @@ import lombok.ToString;
 public class NewsDTO {
     private Long id;
     private Long adminId;
+    private Long postId;
     private String newsTitle;
     private String newsContent;
     private String newsSourceUrl;

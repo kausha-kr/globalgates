@@ -5,6 +5,7 @@
     <select id="selectAdminNews" resultType="com.app.globalgates.dto.NewsDTO">
         select id,
                admin_id,
+               post_id,
                news_title,
                news_content,
                news_source_url,
@@ -17,9 +18,14 @@
         order by created_datetime desc
     </select>
 
+    <select id="selectPostIdById" resultType="java.lang.Long">
+        select post_id from tbl_news where id = #{id}
+    </select>
+
     <insert id="insertAdminNews">
         insert into tbl_news (
             admin_id,
+            post_id,
             news_title,
             news_content,
             news_source_url,
@@ -28,6 +34,7 @@
             published_at
         ) values (
             #{adminId},
+            #{postId},
             #{newsTitle},
             #{newsContent},
             #{newsSourceUrl},

@@ -10,6 +10,8 @@ import java.util.List;
 public interface AdminNewsMapper {
     List<NewsDTO> selectAdminNews();
 
+    Long selectPostIdById(@Param("id") Long id);
+
     int insertAdminNews(NewsDTO newsDTO);
 
     int updateAdminNews(NewsDTO newsDTO);

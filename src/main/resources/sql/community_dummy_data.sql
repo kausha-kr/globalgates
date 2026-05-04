@@ -1,3 +1,12 @@
+alter table public.tbl_subscription
+    add column if not exists billing_key varchar(255);
+
+alter table tbl_subscription drop column next_tier;
+alter table tbl_subscription drop column next_billing_cycle;
+alter table public.tbl_subscription
+    add column if not exists amount bigint;
+
+
 -- ============================================================
 -- 커뮤니티 더미데이터 SQL (PostgreSQL)
 -- 실행 순서: 이 파일을 통째로 실행

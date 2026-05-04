@@ -16,6 +16,10 @@ public class AdminNewsDAO {
         return adminNewsMapper.selectAdminNews();
     }
 
+    public Long findPostIdById(Long id) {
+        return adminNewsMapper.selectPostIdById(id);
+    }
+
     public void save(NewsDTO newsDTO) {
         adminNewsMapper.insertAdminNews(newsDTO);
     }
