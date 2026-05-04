@@ -440,3 +440,49 @@
 .vai-chat-send-btn:hover {
     background-color: #1a8cd8;
 }
+
+/* ===== 모바일 반응형 ===== */
+/* - .mobile-nav(높이 53px, bottom:0)에 가려지지 않도록 FAB을 더보기 버튼 바로 위에 배치
+   - 더보기 시트가 열리면(body.mob-more-open / --mob-more-sheet-h) FAB·드롭다운·패널을
+     시트 높이만큼 위로 밀어 올린다 — 시트와 겹치지 않게.
+   - 드롭다운/패널을 화면 폭에 맞춰 좌우 12px 마진으로 조절해 데스크탑 고정폭(360/400)
+     에서 발생하던 가로 오버플로 깨짐을 해소한다. */
+@media (max-width: 600px) {
+    .vai-fab {
+        bottom: calc(53px + 8px);
+        right: 12px;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        transition: bottom 0.2s ease-out;
+    }
+
+    .vai-dropdown,
+    .vai-panel {
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-width: none;
+        bottom: calc(53px + 8px + 48px + 8px);
+        transition: bottom 0.2s ease-out;
+    }
+
+    .vai-chat-panel {
+        height: auto;
+        max-height: 60vh;
+    }
+
+    .vai-summary-body {
+        max-height: 50vh;
+    }
+
+    /* 더보기 시트 열림 → FAB / 드롭다운 / 패널을 시트 높이만큼 위로 */
+    body.mob-more-open .vai-fab {
+        bottom: calc(53px + var(--mob-more-sheet-h, 0px) + 8px);
+    }
+
+    body.mob-more-open .vai-dropdown,
+    body.mob-more-open .vai-panel {
+        bottom: calc(53px + var(--mob-more-sheet-h, 0px) + 8px + 48px + 8px);
+    }
+}

@@ -1337,14 +1337,9 @@ div.postHashtags {
     z-index: 1;
 }
 
-/* 게시물 상세 페이지의 모든 카드(히어로 게시글 + 댓글 + 대댓글)에서
-   본문·미디어·액션바를 아바타 폭(40)+갭(12)=52px만큼 들여 헤더의 아바타
-   오른쪽 라인에 정렬한다. 액션바 버튼 위치도 자연스럽게 통일된다.
-   스레드 연결선(.post-detail-thread-group::before, left:35px)과 본문이 겹쳐
-   왼쪽 글자가 잘려 보이는 문제도 같이 해결된다. */
-.post-detail-main .postCard .postBody > *:not(.postHeader) {
-    padding-left: 52px;
-}
+/* 본문/액션바 들여쓰기는 main.css의 전역 규칙(.postCard .postBody ... padding-left: 52px)
+   에서 처리한다. 그 결과 스레드 연결선(.post-detail-thread-group::before, left:35px)과
+   본문 글자 영역이 겹치지 않아 왼쪽 잘림 현상도 해소된다. */
 
 .post-detail-actions--reply {
     display: flex;

@@ -3938,6 +3938,15 @@ input.tweet-modal__location-display-text-inner {
     background: #f7f9f9;
 }
 
+/* 모든 게시물 카드(메인 피드 / 커뮤니티 / 마이페이지 / 뉴스 / 게시물 상세 등)의
+   본문·미디어·액션바 위치를 통일: 헤더 안의 아바타(40) + 갭(12) = 52px만큼 들여
+   본문 텍스트와 액션 버튼이 항상 아바타 오른쪽 라인부터 시작하도록 한다.
+   - 헤더(.postHeader) 자신은 제외 (아바타가 그 안에 위치)
+   - 뉴스 카드(.postBody.postCard--news)는 아바타 없는 별도 레이아웃이라 제외 */
+.postCard .postBody:not(.postCard--news) > *:not(.postHeader) {
+    padding-left: 52px;
+}
+
 .postAdBadge {
     font-size: 11px;
     font-weight: 700;
