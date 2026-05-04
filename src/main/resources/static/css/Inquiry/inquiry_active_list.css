@@ -39,6 +39,56 @@ button {
 }
 
 /* ===== 상단 헤더 / 제목 ===== */
+.expert-page-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-bottom: 1px solid #eff3f4;
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 53px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid #eff3f4;
+}
+
+.header-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    color: #0f1419;
+    transition: background-color 0.2s ease;
+}
+
+.header-back:hover {
+    background: rgba(15, 20, 25, 0.08);
+}
+
+.header-back-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.header-spacer {
+    flex: 1;
+}
+
 .activity-header {
     position: relative;
     top: auto;

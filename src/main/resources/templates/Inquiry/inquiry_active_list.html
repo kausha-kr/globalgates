@@ -17,12 +17,18 @@
         <div class="activity-layout">
             <div class="activity-shell">
                 <!-- 상단 제목 + 탭 네비게이션 -->
-                <header class="activity-header">
-                    <div class="activity-header__inner">
-                        <h1 class="activity-header__title">거래처 활동 목록 보기</h1>
+                <header class="expert-page-header">
+                    <div class="main-header">
+                        <button class="header-back" id="headerBack" type="button" aria-label="뒤로가기">
+                            <svg viewBox="0 0 24 24" class="header-back-icon" aria-hidden="true">
+                                <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"/>
+                            </svg>
+                        </button>
+                        <h1 class="header-title">거래처 활동 목록</h1>
+                        <div class="header-spacer"></div>
                     </div>
                     <!-- 상단 탭은 400px 이하에서도 4등분 고정 크기로 배치된다 -->
-                    <nav class="inquiry-tabnav" aria-label="거래처 활동 목록" role="navigation">
+                    <nav class="inquiry-tabnav" aria-label="전문가 페이지" role="navigation">
                         <div class="inquiry-tabnav__inner">
                             <div role="tablist" class="inquiry-tabnav__list" data-testid="ScrollSnap-List">
                                 <div role="presentation" class="inquiry-tabnav__item">
@@ -2486,7 +2492,6 @@
     <div th:replace="~{common/mobile-nav :: mobileMoreSheet}"></div>
     </body>
     </html>
-
 
 
 

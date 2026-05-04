@@ -68,6 +68,61 @@ body {
     background: var(--color-surface);
 }
 
+.expert-page-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 53px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.header-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color var(--transition-base);
+}
+
+.header-back:hover {
+    background: rgba(15, 20, 25, 0.08);
+}
+
+.header-back-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.header-title {
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
+}
+
+.header-spacer {
+    flex: 1;
+}
+
 .Activity-Header {
     position: sticky;
     top: 0;
@@ -169,6 +224,90 @@ body {
 }
 
 .Inquiry-Tab--Active .Inquiry-Tab-Indicator {
+    opacity: 1;
+}
+
+.inquiry-tabnav {
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.inquiry-tabnav__inner {
+    display: flex;
+    align-items: center;
+    scrollbar-width: none;
+}
+
+.inquiry-tabnav__inner::-webkit-scrollbar {
+    display: none;
+}
+
+.inquiry-tabnav__list {
+    display: flex;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 0;
+}
+
+.inquiry-tabnav__list::-webkit-scrollbar {
+    display: none;
+}
+
+.inquiry-tabnav__item {
+    flex: 1;
+    min-width: 120px;
+}
+
+.inquiry-tab {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 12px;
+    border: none;
+    background-color: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--transition-base);
+}
+
+.inquiry-tab:hover {
+    background-color: rgba(15, 20, 25, 0.04);
+}
+
+.inquiry-tab--active {
+    color: var(--color-text-primary);
+}
+
+.inquiry-tab__label {
+    display: block;
+    text-align: center;
+    word-break: keep-all;
+}
+
+.inquiry-tab__indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    max-width: 64px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 0.15s ease;
+}
+
+.inquiry-tab--active .inquiry-tab__indicator {
     opacity: 1;
 }
 
@@ -591,17 +730,20 @@ body {
         padding: 14px 12px 6px;
     }
 
-    .Inquiry-Tabnav-List {
+    .Inquiry-Tabnav-List,
+    .inquiry-tabnav__list {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         overflow-x: visible;
     }
 
-    .Inquiry-Tabnav-Item {
+    .Inquiry-Tabnav-Item,
+    .inquiry-tabnav__item {
         min-width: 0;
     }
 
-    .Inquiry-Tab {
+    .Inquiry-Tab,
+    .inquiry-tab {
         min-height: 68px;
         padding: 8px 6px 10px;
         font-size: 13px;
@@ -609,14 +751,16 @@ body {
         white-space: normal;
     }
 
-    .Inquiry-Tab-Label {
+    .Inquiry-Tab-Label,
+    .inquiry-tab__label {
         display: -webkit-box;
         overflow: hidden;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
     }
 
-    .Inquiry-Tab-Indicator {
+    .Inquiry-Tab-Indicator,
+    .inquiry-tab__indicator {
         max-width: 44px;
     }
 

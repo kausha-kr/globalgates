@@ -17,37 +17,39 @@
 <main class="activity-page">
     <div class="activity-layout">
         <div class="activity-shell">
-            <header class="activity-header">
-                <div class="activity-header__inner">
-                    <h1 class="activity-header__title">견적 요청 목록</h1>
+            <header class="expert-page-header">
+                <div class="main-header">
+                    <button class="header-back" id="headerBack" type="button" aria-label="뒤로가기">
+                        <svg viewBox="0 0 24 24" class="header-back-icon" aria-hidden="true">
+                            <path d="M7.414 13l5.043 5.04-1.414 1.42L3.586 12l7.457-7.46 1.414 1.42L7.414 11H21v2H7.414z"/>
+                        </svg>
+                    </button>
+                    <h1 class="header-title">견적 요청 목록</h1>
+                    <div class="header-spacer"></div>
                 </div>
-                <nav class="inquiry-tabnav" aria-label="견적 요청 목록" role="navigation">
+                <nav class="inquiry-tabnav" aria-label="전문가 페이지" role="navigation">
                     <div class="inquiry-tabnav__inner">
                         <div role="tablist" class="inquiry-tabnav__list" data-testid="ScrollSnap-List">
                             <div role="presentation" class="inquiry-tabnav__item">
-                                <a href="/inquiry/chart" role="tab" aria-selected="false" class="inquiry-tab"
-                                   data-inquiry-tab="summary">
+                                <a href="/inquiry/chart" role="tab" aria-selected="false" class="inquiry-tab" data-inquiry-tab="summary">
                                     <span class="inquiry-tab__label">요약</span>
                                     <span class="inquiry-tab__indicator"></span>
                                 </a>
                             </div>
                             <div role="presentation" class="inquiry-tabnav__item">
-                                <a href="/inquiry/member-list" role="tab" aria-selected="false" class="inquiry-tab"
-                                   data-inquiry-tab="partners">
+                                <a href="/inquiry/member-list" role="tab" aria-selected="false" class="inquiry-tab" data-inquiry-tab="partners">
                                     <span class="inquiry-tab__label">거래처 등록 목록</span>
                                     <span class="inquiry-tab__indicator"></span>
                                 </a>
                             </div>
                             <div role="presentation" class="inquiry-tabnav__item">
-                                <a href="/inquiry/activity/list" role="tab" aria-selected="false" class="inquiry-tab"
-                                   data-inquiry-tab="activity">
+                                <a href="/inquiry/activity/list" role="tab" aria-selected="false" class="inquiry-tab" data-inquiry-tab="activity">
                                     <span class="inquiry-tab__label">거래처 활동 목록</span>
                                     <span class="inquiry-tab__indicator"></span>
                                 </a>
                             </div>
                             <div role="presentation" class="inquiry-tabnav__item">
-                                <a href="/estimation/list" role="tab" aria-selected="true"
-                                   class="inquiry-tab inquiry-tab--active" data-inquiry-tab="quotes">
+                                <a href="/estimation/list" role="tab" aria-selected="true" class="inquiry-tab inquiry-tab--active" data-inquiry-tab="quotes">
                                     <span class="inquiry-tab__label">견적 요청 목록</span>
                                     <span class="inquiry-tab__indicator"></span>
                                 </a>
