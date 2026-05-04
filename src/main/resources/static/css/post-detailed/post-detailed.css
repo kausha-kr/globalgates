@@ -2668,14 +2668,6 @@ div.postHashtags {
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
 }
 
-.tweet-modal:has(.tweet-modal__draft-view:not([hidden])),
-.tweet-modal:has(.tweet-modal__location-view:not([hidden])),
-.tweet-modal:has(.tweet-modal__media-view:not([hidden])),
-.tweet-modal:has(.tweet-modal__tag-view:not([hidden])),
-.tweet-modal:has(.tweet-modal__product-view:not([hidden])) {
-    height: 90vh;
-}
-
 .tweet-modal__header {
     display: flex;
     align-items: center;
@@ -2809,14 +2801,6 @@ div.postHashtags {
     border-bottom: 1px solid #eff3f4;
 }
 
-.tweet-modal__source-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 9999px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
 .tweet-modal__source-body {
     min-width: 0;
     flex: 1;
@@ -2857,13 +2841,6 @@ div.postHashtags {
 [data-reply-modal] .tweet-modal__footer {
     border-top: none;
     padding: 6px 16px 12px;
-}
-
-[data-reply-modal] .tweet-modal__composer {
-    align-items: flex-start;
-    gap: 12px;
-    min-height: 116px;
-    padding: 6px 0 12px;
 }
 
 [data-reply-modal] .tweet-modal__avatar-image {

@@ -1,4 +1,4 @@
-window.onload = () => {
+document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
     // 1. 샘플 회의 데이터
@@ -336,4 +336,4 @@ window.onload = () => {
     // 26. 초기 렌더링 실행
     renderMeetings();
 
-};
+});

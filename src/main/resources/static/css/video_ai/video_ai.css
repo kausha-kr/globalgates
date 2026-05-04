@@ -1,18 +1,14 @@
-/* ===== Reset & Base ===== */
-*, *::before, *::after {
+/* video_ai 위젯 reset — .vai-container 하위로만 적용 (전역 영향 차단) */
+.vai-container,
+.vai-container *,
+.vai-container *::before,
+.vai-container *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    background-color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #0f1419;
-    overflow: hidden;
-}
-
-button {
+.vai-container button {
     cursor: pointer;
     border: none;
     background: none;
@@ -20,7 +16,7 @@ button {
     padding: 0;
 }
 
-textarea {
+.vai-container textarea {
     font-family: inherit;
     border: none;
     outline: none;

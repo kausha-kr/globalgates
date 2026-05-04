@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/main/main.css">
     <link rel="stylesheet" href="/css/mention/mention.css">
     <link rel="stylesheet" href="/css/main/product-in-mainpage.css">
+    <link rel="stylesheet" href="/css/video_ai/video_ai.css"/>
     <script src="/js/common/mobile-nav.js" th:src="@{/js/common/mobile-nav.js}" defer></script>
     <script src="/js/common/profile-link.js" defer></script>
     <script src="/js/common/header.js" defer></script>
@@ -31,6 +32,7 @@
     <script src="/js/main/event.js"></script>
     <script src="/js/main/service.js"></script>
     <script src="/js/main/layout.js"></script>
+    <script src="/js/video_ai/event.js" defer></script>
 </head>
 <body>
 <div class="Page-Layout">
@@ -205,6 +207,7 @@
 <div th:replace="~{common/compose-modal :: composeModal}"></div>
 <!-- 답글 모달: 전역 fragment 사용 (post-modal.js가 [data-reply-modal] 셀렉터로 잡아 셋업). -->
 <div th:replace="~{common/reply-modal :: replyModal}"></div>
+<div th:replace="~{video_ai/video_ai :: videoAi}"></div>
 <nav class="mobileBar" id="mobileBar">
     <a class="mobileItem">홈</a>
     <a class="mobileItem">탐색</a>

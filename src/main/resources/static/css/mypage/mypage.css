@@ -692,7 +692,7 @@ body {
     display: flex;
     flex: 0 0 auto;
     align-items: stretch;
-    width: 350px;
+    width: 316px;
     margin-right: 10px;
     position: relative;
 }
@@ -704,7 +704,7 @@ body {
     align-items: stretch;
     padding-top: 50px;
     gap: 20px;
-    width: 350px;
+    width: 316px;
 }
 
 .Sidebar-Search-Fixed {
@@ -765,7 +765,7 @@ body {
 }
 
 .Sidebar-Card {
-    width: 100%;
+    width: 316px;
     align-items: stretch;
     border: 1px solid #e9eef2;
     border-radius: 24px;
