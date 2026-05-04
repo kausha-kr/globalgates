@@ -1061,14 +1061,6 @@ body.modal-open { overflow: hidden; }
 .tweet-modal__source-handle, .tweet-modal__source-time { color: #536471; }
 .tweet-modal__source-text { font-size: 15px; line-height: 20px; color: #0f1419; word-break: break-word; }
 
-.tweet-modal__composer {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  min-height: 116px;
-  padding: 6px 0 12px;
-}
-
 .tweet-modal__input-wrap { padding-top: 2px; }
 
 .tweet-modal__editor {

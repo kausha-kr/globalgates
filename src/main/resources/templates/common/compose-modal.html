@@ -1,9 +1,8 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!-- 게시물 작성/수정 모달 fragment. 모달 동작은 main/event.js 가 담당, 아바타는 navMember(loginMember 우선 + member 폴백). -->
-<div th:fragment="composeModal" class="tweet-modal-overlay off" data-compose-modal
-     th:with="navMember=${loginMember != null ? loginMember : member}">
+<!-- 게시물 작성/수정 모달 fragment. 모달 동작은 main/event.js 가 담당. -->
+<div th:fragment="composeModal" class="tweet-modal-overlay off" data-compose-modal>
     <div class="tweet-modal">
         <div class="tweet-modal__compose-view">
             <div class="tweet-modal__header">
@@ -15,9 +14,6 @@
             </div>
             <div class="tweet-modal__body">
                 <div class="tweet-modal__composer">
-                    <div class="tweet-modal__avatar-wrap" id="composeAvatar">
-                        <img th:src="${navMember?.fileName != null ? navMember.fileName : '/images/profile/default_image.png'}" alt="" />
-                    </div>
                     <div class="tweet-modal__input-wrap">
                         <!-- 커뮤니티 선택 영역 (게시판 선택은 제거, 커뮤니티 태그만 유지) -->
                         <div class="composerAudience">

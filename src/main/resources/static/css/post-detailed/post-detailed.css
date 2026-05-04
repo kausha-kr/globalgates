@@ -58,12 +58,23 @@ a {
     background: #ffffff;
 }
 
-/* main.css postText의 line-clamp:2 무력화 — detail에선 본문 전체 노출 */
-.post-detail-shell .postText {
+/* hero 카드 only: 페이지 진입 카드라 클릭/hover 불가, 위 12 / 아래 0 padding, 답글 영역과 경계 */
+.post-detail-thread > .postCard {
+    cursor: default;
+    padding: 12px 16px 0;
+    border-bottom: 1px solid #eff3f4;
+}
+.post-detail-thread > .postCard:hover {
+    background: transparent;
+}
+
+/* hero 본문 only: main.css postText의 line-clamp:2 + margin 무력화 — 본문 전체 노출, 위 16 / 아래 0 */
+.post-detail-thread > .postCard .postText {
     display: block;
     -webkit-line-clamp: unset;
     overflow: visible;
     white-space: pre-line;
+    margin: 16px 0 0;
 }
 
 .post-detail-main {
@@ -131,11 +142,6 @@ a {
     flex-direction: column;
 }
 
-.post-detail-hero {
-    padding: 12px 16px 0;
-    border-bottom: 1px solid #eff3f4;
-}
-
 .post-detail-community-meta {
     display: flex;
     align-items: center;
@@ -164,107 +170,18 @@ a {
     border-radius: 9999px;
 }
 
-.post-detail-hero-top,
-.post-detail-profile,
-.post-detail-name-row,
-.post-detail-handle-row,
 .post-detail-actions,
 .post-detail-meta,
-.post-detail-reply-box,
-.post-detail-reply-header,
-.post-detail-reply-identity,
-.post-detail-reply-actions {
+.post-detail-reply-box {
     display: flex;
     align-items: center;
 }
 
-.post-detail-hero-top {
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.post-detail-profile {
-    gap: 12px;
-    min-width: 0;
-}
-
-.post-detail-profile-copy,
-.post-detail-reply-content {
-    min-width: 0;
-    flex: 1;
-}
-
-.post-detail-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 15px;
-    font-weight: 800;
-    color: #ffffff;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.post-detail-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.post-detail-avatar--brand {
-    background: #111111;
-}
-
-.post-detail-avatar--light {
-    background: #d9d9d9;
-    color: #444444;
-}
-
-.post-detail-avatar--teal {
-    background: linear-gradient(135deg, #007f7a, #54c7c2);
-}
-
-.post-detail-name-row,
-.post-detail-handle-row,
-.post-detail-reply-identity {
-    gap: 4px;
-    flex-wrap: wrap;
-}
-
-.post-detail-name,
-.post-detail-reply-identity strong {
-    font-size: 15px;
-    font-weight: 700;
-}
-
-.post-detail-handle,
-.post-detail-handle-sep,
-.post-detail-reply-identity span,
 .post-detail-meta {
     color: #536471;
     font-size: 14px;
 }
 
-.post-detail-verified {
-    width: 18px;
-    height: 18px;
-    fill: #1d9bf0;
-    flex-shrink: 0;
-}
-
-.post-detail-hero-actions,
-.post-detail-reply-side {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-}
-
-.post-detail-subscribe,
 .post-detail-reply-submit {
     display: inline-flex;
     align-items: center;
@@ -275,24 +192,6 @@ a {
     border-radius: 999px;
     font-size: 14px;
     font-weight: 800;
-}
-
-.post-detail-subscribe {
-    background: #0f1419;
-    color: #ffffff;
-}
-
-.post-detail-body-copy {
-    margin-top: 10px;
-}
-
-.post-detail-body-text,
-.post-detail-reply-text {
-    margin: 0;
-    font-size: 15px;
-    line-height: 24px;
-    white-space: pre-line;
-    margin-top: 16px;
 }
 
 .postLocation {
@@ -429,8 +328,7 @@ div.postHashtags {
 }
 
 .post-detail-action-button,
-.tweet-action-btn,
-.post-detail-reply-actions button {
+.tweet-action-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1427,65 +1325,16 @@ div.postHashtags {
     content: "";
     position: absolute;
     left: 35px;
-    top: 48px;
-    bottom: 117px;
+    top: 59px;
+    bottom: 128px;
     width: 2px;
     background: rgb(207, 217, 222);
     z-index: 1;
 }
 
-a.post-detail-reply-card {
-    text-decoration: none;
-    color: inherit;
-    border-bottom: solid 1px #eff3f4;
-}
-
-.post-detail-reply-card {
-    position: relative;
-    display: flex;
-    gap: 12px;
-    padding: 5px 16px;
-}
-
 .post-detail-thread-item .postAvatar {
     position: relative;
     z-index: 1;
-}
-
-.post-detail-reply-card--sub {
-    margin-left: 0;
-}
-
-.post-detail-reply-card:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-}
-
-.post-detail-reply-header {
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.post-detail-reply-card--reported {
-    pointer-events: none;
-}
-
-.post-detail-reply-content--reported {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 8px 0;
-}
-
-.post-detail-reply-reported-text {
-    margin: 0;
-    font-size: 14px;
-    color: #71767b;
-}
-
-.post-detail-reply-text {
-    margin-top: 4px;
-    color: #0f1419;
 }
 
 .post-detail-actions--reply {
@@ -1494,13 +1343,6 @@ a.post-detail-reply-card {
     gap: 4px;
     width: 100%;
     margin-top: 8px;
-}
-
-.post-detail-action-right {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-left: auto;
 }
 
 .post-detail-actions--reply .post-detail-action-button,

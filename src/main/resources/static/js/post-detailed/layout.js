@@ -27,8 +27,8 @@ const layout = (() => {
 
         const threadClass = inThread ? " post-detail-thread-item" : "";
 
-        const replyBtn = `<button class="post-detail-action-button tweet-action-btn" type="button" data-action="reply">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.96-1.607 5.68-4.196 7.11l-8.054 4.46v-3.69h-.067c-4.49.1-8.183-3.51-8.183-8.01zm8.005-6c-3.317 0-6.005 2.69-6.005 6 0 3.37 2.77 6.08 6.138 6.01l.351-.01h1.761v2.3l5.087-2.81c1.951-1.08 3.163-3.13 3.163-5.36 0-3.39-2.744-6.13-6.129-6.13H9.756z"></path></svg>
+        const replyBtn = `<button class="tweet-action-btn" type="button" data-action="reply">
+                        <svg class="tweet-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.96-1.607 5.68-4.196 7.11l-8.054 4.46v-3.69h-.067c-4.49.1-8.183-3.51-8.183-8.01zm8.005-6c-3.317 0-6.005 2.69-6.005 6 0 3.37 2.77 6.08 6.138 6.01l.351-.01h1.761v2.3l5.087-2.81c1.951-1.08 3.163-3.13 3.163-5.36 0-3.39-2.744-6.13-6.129-6.13H9.756z"></path></svg>
                         <span class="tweet-action-count">${r.replyCount || 0}</span>
                     </button>`;
 
@@ -50,7 +50,7 @@ const layout = (() => {
                         </div>
                     </div>
                     <button class="postMoreButton" type="button" aria-label="더 보기">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path></svg>
+                        <svg class="postMoreIcon" viewBox="0 0 24 24" aria-hidden="true"><g><path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm7 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path></g></svg>
                     </button>
                 </header>
                 <p class="postText">${esc(r.postContent || "")}</p>
@@ -70,21 +70,27 @@ const layout = (() => {
                                     <span name="price" class="Detail-Value">개당 ${(r.productPrice != null ? r.productPrice.toLocaleString() : '0')}원</span>
                                 </div>
                             </div>` : ''}
-                <div class="post-detail-actions post-detail-actions--reply" data-stop-card-link>
-                    ${replyBtn}
-                    <button class="post-detail-action-button post-detail-action-button--like tweet-action-btn tweet-action-btn--like ${r.liked ? 'active' : ''}" type="button" data-testid="like">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path data-path-inactive="${SVG.likeOff}" data-path-active="${SVG.likeOn}" d="${r.liked ? SVG.likeOn : SVG.likeOff}"></path></svg>
-                        <span class="tweet-action-count">${r.likeCount || 0}</span>
-                    </button>
-                    <div class="post-detail-action-right">
-                        <button class="post-detail-action-button post-detail-action-button--bookmark tweet-action-btn tweet-action-btn--bookmark" type="button" data-testid="bookmark" aria-label="북마크">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path data-path-inactive="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z" data-path-active="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5z" d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z"></path></svg>
+                <footer class="postMetrics" data-stop-card-link>
+                    <div class="tweet-action-bar">
+                        ${replyBtn}
+                        <button class="tweet-action-btn tweet-action-btn--like ${r.liked ? 'active' : ''}" type="button" data-testid="like">
+                            <svg class="tweet-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path data-path-inactive="${SVG.likeOff}" data-path-active="${SVG.likeOn}" d="${r.liked ? SVG.likeOn : SVG.likeOff}"></path></svg>
+                            <span class="tweet-action-count">${r.likeCount || 0}</span>
                         </button>
-                        <button class="post-detail-action-button tweet-action-btn tweet-action-btn--share" type="button" aria-label="댓글 공유하기" aria-haspopup="menu" aria-expanded="false">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"></path></svg>
+                        <button class="tweet-action-btn tweet-action-btn--views" aria-label="조회수 ${r.postReadCount || 0}">
+                            <svg class="tweet-action-icon" viewBox="0 0 24 24" aria-hidden="true"><g><path d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21l.004-10h2L6 21H4zm9.248 0v-7h2v7h-2z"></path></g></svg>
+                            <span class="tweet-action-count">${r.postReadCount || 0}</span>
                         </button>
+                        <div class="tweet-action-right">
+                            <button class="tweet-action-btn tweet-action-btn--bookmark ${r.bookmarked ? 'active' : ''}" type="button" data-testid="bookmark" aria-label="북마크">
+                                <svg class="tweet-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path data-path-inactive="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z" data-path-active="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5z" d="${r.bookmarked ? 'M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5z' : 'M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z'}"></path></svg>
+                            </button>
+                            <button class="tweet-action-btn tweet-action-btn--share" type="button" aria-label="댓글 공유하기" aria-haspopup="menu" aria-expanded="false">
+                                <svg class="tweet-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"></path></svg>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </footer>
             </div>
         </div>`;
     };

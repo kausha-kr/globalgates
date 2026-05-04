@@ -1,9 +1,8 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!-- 답글 모달 fragment. 모달 동작은 post-modal.js 가 담당, 아바타는 navMember(loginMember 우선 + member 폴백). -->
-<div th:fragment="replyModal" class="tweet-modal-overlay off" data-reply-modal
-     th:with="navMember=${loginMember != null ? loginMember : member}">
+<!-- 답글 모달 fragment. 모달 동작은 post-modal.js 가 담당. 원글 아바타(replySourceAvatar)는 post-modal.js에서 동적 채움. -->
+<div th:fragment="replyModal" class="tweet-modal-overlay off" data-reply-modal>
     <div class="tweet-modal">
         <!-- 작성 화면: 답글 입력창, 첨부 미리보기, 하단 툴바가 들어가는 기본 화면 -->
         <div class="tweet-modal__compose-view">
@@ -31,10 +30,6 @@
                     </div>
                 </article>
                 <div class="tweet-modal__composer">
-                    <div class="tweet-modal__avatar-wrap" id="replyAvatar">
-                        <img th:if="${navMember.fileName != null}" th:src="${navMember.fileName}" alt="" />
-                        <span th:if="${navMember.fileName == null}" th:text="${navMember.memberNickname != null ? navMember.memberNickname.substring(0,1) : (navMember.memberHandle != null ? navMember.memberHandle.substring(0,1) : '?')}"></span>
-                    </div>
                     <div class="tweet-modal__input-wrap">
                         <!-- 선택된 태그 chip 표시 dock (compose-modal 패턴 동일) -->
                         <div class="composerAudienceTagDock">

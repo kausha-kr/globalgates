@@ -652,14 +652,6 @@ body.modal-open {
     word-break: break-word;
 }
 
-.tweet-modal__composer {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    min-height: 116px;
-    padding: 6px 0 12px;
-}
-
 .tweet-modal__input-wrap {
     padding-top: 2px;
 }
