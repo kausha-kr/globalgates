@@ -6,14 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>거래처 등록 목록</title>
     <link rel="stylesheet" href="/css/common/mobile-nav.css" th:href="@{/css/common/mobile-nav.css}"/>
+    <link rel="stylesheet" href="/css/main/main.css"/>
+    <link rel="stylesheet" href="/css/common/post-modal.css"/>
     <link rel="stylesheet" href="/css/Inquiry/Inquiry_list.css"/>
     <script src="/js/common/mobile-nav.js" th:src="@{/js/common/mobile-nav.js}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+    <script th:inline="javascript">
+        const memberId = /*[[${member?.id}]]*/ null;
+    </script>
+    <script src="/js/main/service.js"></script>
+    <script src="/js/common/post-modal-service.js"></script>
+    <script src="/js/common/post-modal.js"></script>
     <script src="/js/Inquiry_list/event.js"></script>
     <script src="/js/Inquiry_list/service.js"></script>
     <script src="/js/Inquiry_list/layout.js"></script>
 </head>
 <body>
 <div class="app-layout">
+    <header th:replace="/common/header::header"></header>
     <main class="main-content">
         <div class="main-header">
             <button class="header-back" id="headerBack" type="button">
@@ -110,7 +120,11 @@
 
         </div>
     </main>
+    <footer th:replace="/common/footer::footer"></footer>
 </div>
+
+<!-- 공용 게시글 작성 모달: 사이드바 createPostButton 트리거 -->
+<div th:replace="~{common/compose-modal :: composeModal}"></div>
 
 <!-- 모바일 nav + 더보기 아코디언 (공용 fragment) -->
 <div th:replace="~{common/mobile-nav :: mobileNav('more')}"></div>

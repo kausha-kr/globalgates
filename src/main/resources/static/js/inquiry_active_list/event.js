@@ -1,5 +1,12 @@
 ﻿window.onload = () => {
-
+    // 공용 작성 모달 부트스트랩 — 사이드바 createPostButton 클릭 시 작성 모달 트리거 (자체 답글 모달과 충돌 회피 위해 skipReply)
+    if (typeof postModalApi !== "undefined" && typeof service !== "undefined") {
+        postModalApi.bootstrap({
+            services: service,
+            getMemberId: () => memberId,
+            skipReply: true,
+        });
+    }
 
     const tabButtons = Array.from(
         document.querySelectorAll("[data-inquiry-tab]"),

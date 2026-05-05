@@ -6,12 +6,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>거래처 활동 목록</title>
         <link rel="stylesheet" href="/css/common/mobile-nav.css" th:href="@{/css/common/mobile-nav.css}"/>
+        <link rel="stylesheet" href="/css/main/main.css"/>
+        <link rel="stylesheet" href="/css/common/post-modal.css"/>
         <link rel="stylesheet" href="/css/Inquiry/inquiry_active_list.css"/>
         <script src="/js/common/mobile-nav.js" th:src="@{/js/common/mobile-nav.js}" defer></script>
         <script src="/js/common/profile-link.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+        <script th:inline="javascript">
+            const memberId = /*[[${member?.id}]]*/ null;
+        </script>
+        <script src="/js/main/service.js"></script>
+        <script src="/js/common/post-modal-service.js"></script>
+        <script src="/js/common/post-modal.js"></script>
     </head>
     <body>
+    <div class="Page-Layout">
+    <header th:replace="/common/header::header"></header>
     <!-- inquiry_active_list 화면 전체 래퍼 -->
     <main class="activity-page">
         <div class="activity-layout">
@@ -1885,6 +1895,8 @@
             </div>
         </div>
     </main>
+    <footer th:replace="/common/footer::footer"></footer>
+    </div>
     <!-- ===== 동적 레이어 마운트 지점 (#layers) =====
               openShareDropdown()가 공유 드롭다운을 동적으로 추가한다.
               openMoreDropdown()가 더보기 드롭다운을 동적으로 추가한다.
@@ -2480,6 +2492,9 @@
          - .share-toast : 공유 완료 토스트
          - .notification-toast : 차단/팔로우/신고 알림 토스트
          - .notification-dialog : 차단/신고 확인 모달 -->
+
+    <!-- 공용 게시글 작성 모달: 사이드바 createPostButton 트리거 -->
+    <div th:replace="~{common/compose-modal :: composeModal}"></div>
 
     <!-- ===== 이벤트 스크립트 =====
          inquiry_active_list 화면의 모든 상호작용을 초기화합니다. -->

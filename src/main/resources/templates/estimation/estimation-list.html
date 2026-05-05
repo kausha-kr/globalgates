@@ -6,14 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>견적 요청 목록</title>
     <link rel="stylesheet" href="/css/common/mobile-nav.css" th:href="@{/css/common/mobile-nav.css}"/>
+    <link rel="stylesheet" href="/css/main/main.css"/>
+    <link rel="stylesheet" href="/css/common/post-modal.css"/>
     <link
             rel="stylesheet"
             href="/css/estimation/estimation-list.css"
     />
     <script src="/js/common/mobile-nav.js" th:src="@{/js/common/mobile-nav.js}" defer></script>
     <script src="/js/common/profile-link.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+    <script th:inline="javascript">
+        const memberId = /*[[${member?.id}]]*/ null;
+    </script>
+    <script src="/js/main/service.js"></script>
+    <script src="/js/common/post-modal-service.js"></script>
+    <script src="/js/common/post-modal.js"></script>
 </head>
 <body>
+<div class="Page-Layout">
+<header th:replace="/common/header::header"></header>
 <main class="activity-page">
     <div class="activity-layout">
         <div class="activity-shell">
@@ -110,6 +121,8 @@
         </div>
     </div>
 </main>
+<footer th:replace="/common/footer::footer"></footer>
+</div>
 
 <section class="estimation-detail-modal" data-estimation-detail-modal hidden>
     <div class="estimation-detail-modal__backdrop" data-estimation-detail-close></div>
@@ -146,6 +159,9 @@
         </div>
     </section>
 </div>
+
+<!-- 공용 게시글 작성 모달: 사이드바 createPostButton 트리거 -->
+<div th:replace="~{common/compose-modal :: composeModal}"></div>
 
 <script src="/js/estimation/estimaition-list/service.js"></script>
 <script src="/js/estimation/estimaition-list/layout.js"></script>

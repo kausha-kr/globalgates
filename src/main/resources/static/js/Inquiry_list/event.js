@@ -1,4 +1,12 @@
 window.onload = function () {
+    // 공용 작성 모달 부트스트랩 — 사이드바 createPostButton 클릭 시 작성 모달 트리거 (답글 모달은 미적용)
+    if (typeof postModalApi !== "undefined" && typeof service !== "undefined") {
+        postModalApi.bootstrap({
+            services: service,
+            getMemberId: () => memberId,
+            skipReply: true,
+        });
+    }
 
     const scrollEl = document.getElementById("categoryScroll");
     const btnLeft = document.getElementById("scrollLeft");
