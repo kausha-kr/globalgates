@@ -53,10 +53,10 @@
                 </div>
                 <div class="each-menu">
                     <img src="/images/admin/Icon=book-open.png">
-                    뉴스 등록
+                    뉴스 등록(긴급)
                 </div>
-                <div class="each-menu-auto" id="newsSettingsBtn">
-                    <img src="/images/admin/Icon=settings.png">뉴스 등록(자동)
+                <div class="each-menu-auto" id="newsGeneralWriteMenu">
+                    <img src="/images/admin/Icon=book-open.png">뉴스 등록(일반)
                 </div>
             </div>
 
@@ -303,7 +303,7 @@
                 </select>
                 <input class="search-input" type="text" placeholder="뉴스 제목 검색"/>
                 <button class="btn-primary">검색</button>
-                <button class="btn-outline" id="newsWriteBtn">뉴스 등록</button>
+                <button class="btn-outline" id="newsWriteBtn">뉴스 등록(긴급)</button>
             </div>
             <div class="nw-module">
                 <div class="news-list-header">
@@ -398,7 +398,7 @@
                 <div class="news-write-form">
                     <div class="nw-module">
                         <div class="nw-module-header">
-                            <div class="nw-module-title">뉴스 등록</div>
+                            <div class="nw-module-title" id="newsWriteTitle">뉴스 등록(긴급)</div>
                         </div>
                         <div class="nw-module-body">
 
@@ -452,7 +452,7 @@
                     </div>
 
                     <div class="nw-actions">
-                        <button class="btn-outline" id="newsCancelBtn">취소</button>
+                        <button class="btn-outline" id="newsGeneralSettingsBtn" hidden>등록설정</button>
                         <button class="btn-primary" id="newsSubmitBtn">등록</button>
                     </div>
                 </div>
@@ -461,7 +461,7 @@
                 <div class="news-write-preview">
                     <div class="nw-module preview-sticky">
                         <div class="nw-module-header">
-                            <div class="nw-module-title">뉴스 등록</div>
+                            <div class="nw-module-title" id="newsPreviewTitle">뉴스 등록(긴급)</div>
                         </div>
                         <div class="nw-module-body">
                             <div class="preview-card">

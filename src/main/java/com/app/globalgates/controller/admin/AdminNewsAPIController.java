@@ -33,13 +33,24 @@ public class AdminNewsAPIController {
     @PostMapping
     public ResponseEntity<Void> createAdminNews(@RequestBody NewsDTO newsDTO,
                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
-        // 클라이언트가 보낸 adminId는 무시 — 인증 사용자(어드민)으로 강제
         if (userDetails != null) {
             newsDTO.setAdminId(userDetails.getId());
         }
-        log.info("어드민 뉴스 등록 — adminId: {}, title: {}, type: {}",
+        log.info("admin emergency news create - adminId: {}, title: {}, type: {}",
                 newsDTO.getAdminId(), newsDTO.getNewsTitle(), newsDTO.getNewsType());
         adminNewsService.createAdminNews(newsDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/general")
+    public ResponseEntity<Void> createAdminGeneralNews(@RequestBody NewsDTO newsDTO,
+                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails != null) {
+            newsDTO.setAdminId(userDetails.getId());
+        }
+        log.info("admin general news create - adminId: {}, title: {}, type: {}",
+                newsDTO.getAdminId(), newsDTO.getNewsTitle(), newsDTO.getNewsType());
+        adminNewsService.createAdminGeneralNews(newsDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -51,14 +62,14 @@ public class AdminNewsAPIController {
         if (userDetails != null) {
             newsDTO.setAdminId(userDetails.getId());
         }
-        log.info("어드민 뉴스 수정 — id: {}, adminId: {}", id, newsDTO.getAdminId());
+        log.info("admin news update - id: {}, adminId: {}", id, newsDTO.getAdminId());
         int affected = adminNewsService.updateAdminNews(newsDTO);
         return affected > 0 ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAdminNews(@PathVariable Long id) {
-        log.info("어드민 뉴스 삭제 — id: {}", id);
+        log.info("admin news delete - id: {}", id);
         int affected = adminNewsService.deleteAdminNews(id);
         return affected > 0 ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }

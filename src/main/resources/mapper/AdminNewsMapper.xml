@@ -4,15 +4,15 @@
 
     <select id="selectAdminNews" resultType="com.app.globalgates.dto.NewsDTO">
         select id,
-               admin_id,
-               news_title,
-               news_content,
-               news_source_url,
-               news_category,
-               news_type,
-               to_char(published_at, 'YYYY-MM-DD HH24:MI:SS') as published_at,
-               to_char(created_datetime, 'YYYY-MM-DD HH24:MI:SS') as created_datetime,
-               to_char(updated_datetime, 'YYYY-MM-DD HH24:MI:SS') as updated_datetime
+               admin_id as adminId,
+               news_title as newsTitle,
+               news_content as newsContent,
+               news_source_url as newsSourceUrl,
+               news_category as newsCategory,
+               news_type as newsType,
+               to_char(published_at, 'YYYY-MM-DD HH24:MI:SS') as publishedAt,
+               to_char(created_datetime, 'YYYY-MM-DD HH24:MI:SS') as createdDatetime,
+               to_char(updated_datetime, 'YYYY-MM-DD HH24:MI:SS') as updatedDatetime
         from tbl_news
         order by created_datetime desc
     </select>

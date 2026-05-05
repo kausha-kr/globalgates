@@ -26,6 +26,12 @@ public class AdminNewsService {
     }
 
     @Transactional
+    public void createAdminGeneralNews(NewsDTO newsDTO) {
+        newsDTO.setNewsType(NewsType.GENERAL);
+        adminNewsDAO.save(newsDTO);
+    }
+
+    @Transactional
     public int updateAdminNews(NewsDTO newsDTO) {
         newsDTO.setNewsType(NewsType.EMERGENCY);
         return adminNewsDAO.update(newsDTO);

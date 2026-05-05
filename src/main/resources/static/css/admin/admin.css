@@ -202,7 +202,8 @@ a {
     background: #f7f9f9;
 }
 
-.each-menu.active {
+.each-menu.active,
+.each-menu-auto.active {
     border-left-color: #1d9bf0;
     font-weight: 700;
 }
