@@ -36,21 +36,9 @@ public class AdminNewsAPIController {
         if (userDetails != null) {
             newsDTO.setAdminId(userDetails.getId());
         }
-        log.info("admin emergency news create - adminId: {}, title: {}, type: {}",
+        log.info("admin news create - adminId: {}, title: {}, type: {}",
                 newsDTO.getAdminId(), newsDTO.getNewsTitle(), newsDTO.getNewsType());
         adminNewsService.createAdminNews(newsDTO);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/general")
-    public ResponseEntity<Void> createAdminGeneralNews(@RequestBody NewsDTO newsDTO,
-                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
-        if (userDetails != null) {
-            newsDTO.setAdminId(userDetails.getId());
-        }
-        log.info("admin general news create - adminId: {}, title: {}, type: {}",
-                newsDTO.getAdminId(), newsDTO.getNewsTitle(), newsDTO.getNewsType());
-        adminNewsService.createAdminGeneralNews(newsDTO);
         return ResponseEntity.ok().build();
     }
 

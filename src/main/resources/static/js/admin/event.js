@@ -16,8 +16,6 @@
 
     const newsWriteBtn = document.querySelector("#newsWriteBtn");
     const newsSubmitBtn = document.querySelector("#newsSubmitBtn");
-    const newsGeneralWriteMenu = document.querySelector("#newsGeneralWriteMenu");
-    const newsGeneralSettingsBtn = document.querySelector("#newsGeneralSettingsBtn");
     const aiBtn = document.querySelector("#aiBtn");
 
     const filterMemberGrade = document.querySelector("#filterMemberGrade");
@@ -45,7 +43,6 @@
     const memberTypeSelect = document.querySelector("#memberTypeSelect");
 
     let currentMemberId = null;
-    let newsWriteMode = "emergency";
     let postOriginal = {};
     let newsOriginal = {};
 
@@ -650,20 +647,7 @@
         source: "JoongAng News"
     };
 
-    const setNewsWriteMode = (mode = "emergency") => {
-        newsWriteMode = mode === "general" ? "general" : "emergency";
-        const isGeneral = newsWriteMode === "general";
-        const title = isGeneral ? "뉴스 등록(일반)" : "뉴스 등록(긴급)";
-        document.querySelector("#newsWriteTitle").textContent = title;
-        document.querySelector("#newsPreviewTitle").textContent = title;
-        if (newsGeneralSettingsBtn) {
-            newsGeneralSettingsBtn.hidden = !isGeneral;
-        }
-    };
-
-    const openNewsWritePage = (mode = "emergency") => {
-        setNewsWriteMode(mode);
-
+    const openNewsWritePage = () => {
         pages.forEach((page) => {
             page.classList.remove("active");
         });
@@ -672,14 +656,7 @@
             eachPortal.classList.remove("active");
         });
 
-        newsGeneralWriteMenu?.classList.remove("active");
-
-        if (mode === "general") {
-            newsGeneralWriteMenu?.classList.add("active");
-        } else {
-            portals[3]?.classList.add("active");
-        }
-
+        portals[3]?.classList.add("active");
         pages[3]?.classList.add("active");
     };
 
@@ -697,20 +674,12 @@
 
             e.target.classList.add("active");
             pages[i].classList.add("active");
-            newsGeneralWriteMenu?.classList.remove("active");
-            if (pages[i]?.id === "page-news-write") {
-                setNewsWriteMode("emergency");
-            }
         });
     });
 
 
     newsWriteBtn?.addEventListener("click", (e) => {
-        openNewsWritePage("emergency");
-    });
-
-    newsGeneralWriteMenu?.addEventListener("click", (e) => {
-        openNewsWritePage("general");
+        openNewsWritePage();
     });
 
 
@@ -1152,8 +1121,7 @@
 
         try {
             // adminId 는 서버에서 인증 정보(@AuthenticationPrincipal)로 강제됨 — 클라이언트에서 보낼 필요 없음
-            const endpoint = newsWriteMode === "general" ? "/api/admin/news/general" : "/api/admin/news";
-            await requestJson(endpoint, {
+            await requestJson("/api/admin/news", {
                 method: "POST",
                 body: {
                     newsTitle: title,
@@ -1184,7 +1152,6 @@
         portals.forEach((eachPortal) => {
             eachPortal.classList.remove("active");
         });
-        newsGeneralWriteMenu?.classList.remove("active");
         portals[2].classList.add("active");
         pages[2].classList.add("active");
     });
@@ -1531,11 +1498,17 @@
 
 
     const openNewsAutoSettings = () => {
+        pages.forEach((page) => {
+            page.classList.remove("active");
+        });
+        portals.forEach((eachPortal) => {
+            eachPortal.classList.remove("active");
+        });
+        newsSettingsBtn?.classList.add("active");
         modalNewsAutoSettings.classList.remove("off");
     };
 
     newsSettingsBtn?.addEventListener("click", openNewsAutoSettings);
-    newsGeneralSettingsBtn?.addEventListener("click", openNewsAutoSettings);
 
     document.querySelector("#modalNewsSettingsClose").addEventListener("click", (e) => {
         modalNewsAutoSettings.classList.add("off");

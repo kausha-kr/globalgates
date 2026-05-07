@@ -43,12 +43,6 @@ public class AdminNewsService {
     }
 
     @Transactional
-    public void createAdminGeneralNews(NewsDTO newsDTO) {
-        newsDTO.setNewsType(NewsType.GENERAL);
-        adminNewsDAO.save(newsDTO);
-    }
-
-    @Transactional
     @CacheEvict(value = "post:list", allEntries = true)
     public int updateAdminNews(NewsDTO newsDTO) {
         newsDTO.setNewsType(NewsType.EMERGENCY);
