@@ -55,9 +55,6 @@
                     <img src="/images/admin/Icon=book-open.png">
                     뉴스 등록
                 </div>
-                <div class="each-menu-auto" id="newsSettingsBtn">
-                    <img src="/images/admin/Icon=settings.png">뉴스 등록(자동)
-                </div>
             </div>
 
             <div class="each-box">
@@ -1096,73 +1093,6 @@
         </div>
         <div class="modal-footer">
             <button class="btn-outline" id="modalReportCancel">닫기</button>
-        </div>
-    </div>
-</div>
-
-<!-- 뉴스 자동등록 설정 모달 -->
-<div class="modal-overlay off" id="modalNewsAutoSettings">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>뉴스 자동등록 설정</h3>
-            <button class="modal-close" id="modalNewsSettingsClose">✕</button>
-        </div>
-        <div class="modal-body">
-            <div class="module-card">
-                <div class="modal-section-title">뉴스 자동등록</div>
-                <div class="modal-field-row">
-                    <div class="modal-field-label">자동등록</div>
-                    <div class="modal-field-value">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="autoRegToggle">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="modal-field-row">
-                    <div class="modal-field-label">등록 시간</div>
-                    <div class="modal-field-value">
-                        <div class="autoreg-time-selects">
-                            <select class="status-select" id="autoRegAmPm">
-                                <option>오전</option>
-                                <option>오후</option>
-                            </select>
-                            <select class="status-select" id="autoRegHour">
-                                <option value="1">1시</option>
-                                <option value="2">2시</option>
-                                <option value="3">3시</option>
-                                <option value="4">4시</option>
-                                <option value="5">5시</option>
-                                <option value="6">6시</option>
-                                <option value="7">7시</option>
-                                <option value="8">8시</option>
-                                <option value="9" selected>9시</option>
-                                <option value="10">10시</option>
-                                <option value="11">11시</option>
-                                <option value="12">12시</option>
-                            </select>
-                            <select class="status-select" id="autoRegMinute">
-                                <option value="00" selected>00분</option>
-                                <option value="05">05분</option>
-                                <option value="10">10분</option>
-                                <option value="15">15분</option>
-                                <option value="20">20분</option>
-                                <option value="25">25분</option>
-                                <option value="30">30분</option>
-                                <option value="35">35분</option>
-                                <option value="40">40분</option>
-                                <option value="45">45분</option>
-                                <option value="50">50분</option>
-                                <option value="55">55분</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-outline" id="modalNewsSettingsCancel">닫기</button>
-            <button class="btn-primary" id="modalNewsSettingsSave">저장</button>
         </div>
     </div>
 </div>

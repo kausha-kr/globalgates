@@ -1136,14 +1136,6 @@ a {
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 }
 
-#modalNewsAutoSettings .modal {
-    width: 580px;
-}
-
-#modalNewsAutoSettings.modal-overlay {
-    padding-left: 0px;
-}
-
 .modal-header {
     display: flex;
     align-items: center;
@@ -1500,11 +1492,6 @@ a {
 
 #page-stats-report .stats-data-grid {
     grid-template-columns: repeat(3, 1fr);
-}
-
-#modalNewsAutoSettings .modal-section-title {
-    width: 100%;
-    text-align: center;
 }
 
 .admin-pagination {

@@ -59,8 +59,6 @@
     const reportAttachNone = document.querySelector("#reportAttachNone");
     const reportVideoThumb = document.querySelector("#reportVideoThumb");
     const modalVideoViewer = document.querySelector("#modalVideoViewer");
-    const modalNewsAutoSettings = document.querySelector("#modalNewsAutoSettings");
-    const newsSettingsBtn = document.querySelector("#newsSettingsBtn");
     const memberSearchInput = document.querySelector("#page-member-list .search-input");
     const memberSearchBtn = document.querySelector("#page-member-list .btn-primary");
     const postSearchInput = document.querySelector("#page-post-list .search-input");
@@ -1495,41 +1493,6 @@
             modalImageViewer.classList.add("off");
         }
     });
-
-
-    const openNewsAutoSettings = () => {
-        modalNewsAutoSettings.classList.remove("off");
-    };
-
-    newsSettingsBtn?.addEventListener("click", openNewsAutoSettings);
-
-    document.querySelector("#modalNewsSettingsClose").addEventListener("click", (e) => {
-        modalNewsAutoSettings.classList.add("off");
-    });
-
-    document.querySelector("#modalNewsSettingsCancel").addEventListener("click", (e) => {
-        modalNewsAutoSettings.classList.add("off");
-    });
-
-    modalNewsAutoSettings.addEventListener("click", (e) => {
-        if (e.target === modalNewsAutoSettings) {
-            modalNewsAutoSettings.classList.add("off");
-        }
-    });
-
-    document.querySelector("#modalNewsSettingsSave").addEventListener("click", (e) => {
-        const isOn = document.querySelector("#autoRegToggle").checked;
-        const ampm = document.querySelector("#autoRegAmPm").value;
-        const hour = document.querySelector("#autoRegHour").value;
-        const minute = document.querySelector("#autoRegMinute").value;
-        const resultTime = `${ampm} ${hour}:${minute}`;
-        const result = confirm("자동 뉴스 등록 설정을 저장하시겠습니까?");
-        if (!result) return;
-        alert(isOn ? `${resultTime} 자동 뉴스 등록이 활성화되었습니다.` : "자동 뉴스 등록이 비활성화되었습니다.");
-        modalNewsAutoSettings.classList.add("off");
-    });
-
-
 
     document.querySelector("#newsTitle").addEventListener("input", (e) => {
         previewTitle.textContent = e.target.value || "제목이 여기에 표시됩니다.";
