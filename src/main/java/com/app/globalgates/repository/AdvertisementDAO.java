@@ -21,9 +21,9 @@ public class AdvertisementDAO {
         advertisementMapper.insert(advertisementDTO);
     }
 
-    // 광고 전체 조회
-    public List<AdvertisementDTO> findAll() {
-        return advertisementMapper.selectAll();
+    // 광고 페이지 조회 (메인 피드)
+    public List<AdvertisementDTO> findAllForMain(int count, int offset) {
+        return advertisementMapper.selectAllForMain(count, offset);
     }
 
     // 광고 검색 조회

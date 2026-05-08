@@ -3,6 +3,7 @@ select * from tbl_post_hashtag;
 select * from tbl_post_hashtag_rel;
 
 select * from tbl_post;
+select * from tbl_post where id >= 300;
 
 select * from tbl_post where id=293;
 
@@ -35,6 +36,22 @@ select * from tbl_category;
 select * from tbl_follow;
 
 select * from tbl_advertisement;
+
+select * from tbl_ad_file;
+
+select * from tbl_file;
+
+select * from tbl_advertisement where id=12008;
+select * from tbl_advertisement where id=12009;
+
+select * from tbl_ad_tag where ad_id=12008;
+select * from tbl_ad_tag where ad_id=12009;
+
+select * from tbl_ad_file;
+
+select * from tbl_tag_for_ad;
+
+select * from tbl_ad_tag;
 
 select * from tbl_ad_file;
 
@@ -87,6 +104,7 @@ update tbl_subscription set expires_at = '2026-03-30' where member_id = 41;
 
 -- update tbl_subscription set tier = 'free' where member_id = 41;
 delete from tbl_badge where member_id = 41;
-update tbl_member set member_role = 'business' where id = 41;
 delete from tbl_payment_subscribe where member_id = 41;
 delete from tbl_subscription where member_id = 41;
+
+select count(*) from tbl_advertisement;

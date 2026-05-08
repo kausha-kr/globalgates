@@ -108,7 +108,7 @@ window.onload = () => {
         location.href = "/main/main";
     };
 
-    // 월간 정기결제: 빌링키 발급만 받고 백엔드가 첫 결제 + 결제 기록 저장
+    // 월간 정기결제: 빌링키 발급만 받고 첫 결제 + 결제 기록 저장
     const onSubscriptionIssued = async (plan, billingKey) => {
         console.log("정기결제 빌링키 발급 성공");
         await subscribeService.subscribe(
@@ -123,7 +123,7 @@ window.onload = () => {
     };
 
     const pay = async () => {
-        // 결제 전 토큰 유효성 확인
+        // 결제 전 토큰 확인
         const tokenCheck = await fetch("/api/subscriptions/my");
         if (tokenCheck.status === 401) {
             alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
@@ -151,8 +151,8 @@ window.onload = () => {
             return;
         }
 
-        // 신규 구독 모드: 결제 진행
-        console.log("들어옴12 신규구독모드");
+        // 신규 구독: 결제 진행
+        console.log("들어옴12 신규구독");
         if (plan.amountValue <= 0) return;
 
         const isMonthly = plan.billingCycle === "monthly";
@@ -160,7 +160,7 @@ window.onload = () => {
 
         if (typeof Bootpay === "undefined") {
             if (isMonthly) {
-                alert("Bootpay 가 로드되지 않아 정기결제를 진행할 수 없습니다.");
+                alert("정기결제를 진행할 수 없습니다.");
                 return;
             }
             const demoResult = {
@@ -184,7 +184,7 @@ window.onload = () => {
         ];
 
         try {
-            // 월간: 빌링키 발급 → 백엔드가 첫 결제 + 결제 기록 저장
+            // 월간: 빌링키 발급 → 첫 결제 + 결제 기록 저장
             if (isMonthly) {
                 const response = await Bootpay.requestSubscription({
                     application_id: "69604bf2b6279cebf60ad115",

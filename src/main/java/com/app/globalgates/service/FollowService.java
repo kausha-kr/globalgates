@@ -25,7 +25,7 @@ public class FollowService {
     private final NotificationService notificationService;
 
     //    팔로우 추가
-    @CacheEvict(value = {"member", "post", "post:list"}, allEntries = true)
+    @CacheEvict(value = {"member", "post", "post:list", "expert:list"}, allEntries = true)
     public void follow(FollowDTO followDTO) {
         log.info("팔로우 시도 followerId: {}, followingId: {}", followDTO.getFollowerId(), followDTO.getFollowingId());
         if (blockDAO.isBlockedEither(followDTO.getFollowerId(), followDTO.getFollowingId())) {
@@ -51,7 +51,7 @@ public class FollowService {
     }
 
     //    팔로우 해제
-    @CacheEvict(value = {"member", "post", "post:list"}, allEntries = true)
+    @CacheEvict(value = {"member", "post", "post:list", "expert:list"}, allEntries = true)
     public void unfollow(Long followerId, Long followingId) {
         followDAO.delete(followerId, followingId);
     }

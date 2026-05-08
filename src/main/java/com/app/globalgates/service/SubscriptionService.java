@@ -38,7 +38,7 @@ public class SubscriptionService {
         checkSubList.forEach((each) -> {
             //    월간갱신 (quartz=true) -> 빌링키로 정기결제 청구 후 만료일 갱신
             if(each.isQuartz() && each.getBillingCycle().equals("monthly")){
-                log.info("월갱신 들어옴 — 빌링키 청구 시도");
+                log.info("월갱신 들어옴 — 빌링키 청구 시도함.");
 
                 if (each.getBillingKey() == null || each.getBillingKey().isBlank()) {
                     log.warn("빌링키 없음 — 만료 처리. subscriptionId={}", each.getId());
@@ -84,7 +84,7 @@ public class SubscriptionService {
         );
     }
 
-    //    구독 만료 + 뱃지/role 회수
+    //    구독 만료 + 뱃지/role 없앰
     private void expireSubscription(SubscriptionDTO sub) {
         subscriptionDAO.setStatus(sub.getId(), SubscriptionStatus.EXPIRED);
         badgeDAO.deleteByMemberId(sub.getMemberId());

@@ -6,6 +6,49 @@
         values (#{memberId}, #{postTitle}, #{postContent}, #{location}, #{replyPostId}, #{communityId})
     </insert>
 
+    <!-- 게시글 목록 조회 (메인 피드) -->
+    <select id="selectAll">
+        select v.*,
+               n.news_title,
+               n.news_content as news_content,
+               n.news_type,
+               case when exists (
+                   select 1 from tbl_post_like pl2
+                   where pl2.post_id = v.id and pl2.member_id = #{memberId}
+               ) then true else false end as is_liked,
+               case when exists (
+                   select 1 from tbl_bookmark b
+                   where b.post_id = v.id and b.member_id = #{memberId}
+               ) then true else false end as is_bookmarked,
+               case when exists (
+                   select 1 from tbl_follow f
+                   where f.follower_id = #{memberId} and f.following_id = v.member_id
+               ) then true else false end as is_followed
+        from view_post_feed v
+                 left join tbl_news n on n.post_id = v.id and n.news_type = 'emergency'
+        where v.member_id not in (select bl.blocked_id from tbl_block bl where bl.blocker_id = #{memberId})
+          and v.member_id not in (select bl.blocker_id from tbl_block bl where bl.blocked_id = #{memberId})
+          and v.member_id not in (
+            select r.target_id
+            from tbl_report r
+            where r.reporter_id = #{memberId}
+              and r.target_type = 'member'
+              and r.status in ('pending', 'applied')
+        )
+          and v.id not in (
+            select r.target_id
+            from tbl_report r
+            where r.reporter_id = #{memberId}
+              and r.target_type = 'post'
+              and r.status in ('pending', 'applied')
+        )
+          and not exists (select 1 from tbl_news nw where nw.post_id = v.id and nw.news_type = 'general')
+          and not exists (select 1 from tbl_post_product pp where pp.id = v.id)
+        order by v.created_datetime desc
+        limit #{criteria.count}
+        offset #{criteria.offset}
+    </select>
+
     <update id="update">
         update tbl_post
         set title = #{postTitle},
@@ -41,7 +84,7 @@
                m.member_name as member_nickname,
                m.member_handle,
                (select f.file_name from tbl_member_profile_file mpf
-                   join tbl_file f on mpf.id = f.id
+                                            join tbl_file f on mpf.id = f.id
                 where mpf.member_id = p.member_id and mpf.profile_image_type = 'profile'
                 limit 1) as member_profile_file_name,
                (select count(*) from tbl_post_like pl where pl.post_id = p.id) as like_count,
@@ -57,10 +100,10 @@
                ap.content             as product_content,
                (select string_agg(h.tag_name, ',' order by r.id)
                 from tbl_post_hashtag h
-                join tbl_post_hashtag_rel r on h.id = r.hashtag_id
+                         join tbl_post_hashtag_rel r on h.id = r.hashtag_id
                 where r.post_id = rel.product_post_id) as product_hashtags,
                (select f.file_path from tbl_post_file pf
-                   join tbl_file f on pf.file_id = f.id
+                                            join tbl_file f on pf.file_id = f.id
                 where pf.post_id = rel.product_post_id
                 order by f.id asc
                 limit 1) as product_image,
@@ -85,49 +128,6 @@
                  left join tbl_post ap on ap.id = rel.product_post_id
         where p.id = #{id}
           and p.post_status = 'active'
-    </select>
-
-    <!-- 게시글 목록 조회 (메인 피드) -->
-    <select id="selectAll">
-        select v.*,
-               n.news_title,
-               n.news_content as news_content,
-               n.news_type,
-               case when exists (
-                   select 1 from tbl_post_like pl2
-                   where pl2.post_id = v.id and pl2.member_id = #{memberId}
-               ) then true else false end as is_liked,
-               case when exists (
-                   select 1 from tbl_bookmark b
-                   where b.post_id = v.id and b.member_id = #{memberId}
-               ) then true else false end as is_bookmarked,
-               case when exists (
-                   select 1 from tbl_follow f
-                   where f.follower_id = #{memberId} and f.following_id = v.member_id
-               ) then true else false end as is_followed
-        from view_post_feed v
-        left join tbl_news n on n.post_id = v.id and n.news_type = 'emergency'
-        where v.member_id not in (select bl.blocked_id from tbl_block bl where bl.blocker_id = #{memberId})
-          and v.member_id not in (select bl.blocker_id from tbl_block bl where bl.blocked_id = #{memberId})
-          and v.member_id not in (
-              select r.target_id
-              from tbl_report r
-              where r.reporter_id = #{memberId}
-                and r.target_type = 'member'
-                and r.status in ('pending', 'applied')
-          )
-          and v.id not in (
-              select r.target_id
-              from tbl_report r
-              where r.reporter_id = #{memberId}
-                and r.target_type = 'post'
-                and r.status in ('pending', 'applied')
-          )
-          and not exists (select 1 from tbl_news gn where gn.post_id = v.id and gn.news_type = 'general')
-          and not exists (select 1 from tbl_post_product pp where pp.id = v.id)
-        order by v.created_datetime desc
-        limit #{criteria.count}
-        offset #{criteria.offset}
     </select>
 
     <!--  게시글 검색 조회  -->
@@ -299,7 +299,7 @@
         </if>
     </select>
 
-    <!-- 댓글용 공통 컬럼 (VIEW가 reply_post_id is null 필터라서 직접 조회) -->
+    <!-- 댓글용 공통 (뷰가 reply_post_id is null 필터라서 직접 조회함) -->
     <sql id="replyColumns">
         p.id,
         p.member_id,

@@ -50,12 +50,12 @@ window.onload = () => {
         });
     };
 
-    const loadFeed = () => {
-        service.getPostList(postPage, memberId, (data) => {
-            const posts = layout.showPostList(data.posts, postPage);
-            initFollowState(posts);
-            postHasMore = data.criteria.hasMore;
-        });
+    const loadFeed = async () => {
+        const postData = await service.getPostList(postPage, memberId);
+        const ads = await service.getAds(postPage, 3);
+        const posts = layout.showPostList(postData.posts, ads, postPage);
+        initFollowState(posts);
+        postHasMore = postData.criteria.hasMore;
     };
 
     window.addEventListener("scroll", async (e) => {
@@ -65,11 +65,11 @@ window.onload = () => {
         if (activeTab === "feed" && postCheckScroll && postHasMore) {
             postCheckScroll = false;
             postPage++;
-            await service.getPostList(postPage, memberId, (data) => {
-                const posts = layout.showPostList(data.posts, postPage);
-                initFollowState(posts);
-                postHasMore = data.criteria.hasMore;
-            });
+            const postData = await service.getPostList(postPage, memberId);
+            const ads = await service.getAds(postPage, 3);
+            const posts = layout.showPostList(postData.posts, ads, postPage);
+            initFollowState(posts);
+            postHasMore = postData.criteria.hasMore;
             setTimeout(() => { postCheckScroll = true; }, 1000);
         }
 
@@ -142,8 +142,8 @@ window.onload = () => {
 
     // 피드 카드가 새로 그려진 뒤에 sessionStorage 변경분을 한번 더 입혀준다.
     const _origShowPostList = layout.showPostList;
-    layout.showPostList = function (posts, page) {
-        const result = _origShowPostList(posts, page);
+    layout.showPostList = function (posts, ads, page) {
+        const result = _origShowPostList(posts, ads, page);
         applyPostStateChanges();
         return result;
     };
@@ -151,7 +151,7 @@ window.onload = () => {
     // bfcache 로 복원되어 showPostList 가 다시 호출되지 않을 때를 대비해 pageshow 에서도 한번 더 적용한다.
     window.addEventListener("pageshow", () => applyPostStateChanges());
 
-    // ── 2. 게시물 버튼 이벤트 (이벤트 위임) ──
+    // 2. 게시물 버튼 이벤트 ──
     const mainShareDropdown = document.getElementById("mainShareDropdown");
     let activeMoreDropdown = null;
     let activeMoreButton = null;
@@ -480,7 +480,7 @@ window.onload = () => {
         }
     });
 
-    // 좋아요/북마크 SVG path 토글 헬퍼
+    // 좋아요/북마크 svg path 토글
     function syncActionPath(btn, active) {
         const p = btn?.querySelector("path");
         if (!p) return;
@@ -488,7 +488,7 @@ window.onload = () => {
         if (next) p.setAttribute("d", next);
     }
 
-    // 좋아요 토글 (이벤트 위임)
+    // 좋아요 토글
     document.addEventListener("click", async (e) => {
         const likeBtn = e.target.closest(".tweet-action-btn--like");
         if (!likeBtn) return;
@@ -510,7 +510,7 @@ window.onload = () => {
         savePostStateChange(postId, "liked", !isActive);
     });
 
-    // 북마크 토글 (이벤트 위임)
+    // 북마크 토글
     document.addEventListener("click", async (e) => {
         const bookmarkBtn = e.target.closest(".tweet-action-btn--bookmark");
         if (!bookmarkBtn) return;
@@ -528,7 +528,7 @@ window.onload = () => {
         savePostStateChange(postId, "bookmarked", !isActive);
     });
 
-    // 공유 드롭다운 토글 (이벤트 위임)
+    // 공유 드롭다운 토글
     let shareTargetPostId = null;
     document.addEventListener("click", (e) => {
         const shareBtn = e.target.closest(".tweet-action-btn--share");
@@ -566,7 +566,7 @@ window.onload = () => {
         showShareToast("링크가 복사되었습니다.");
     });
 
-    // ── 2-2. 북마크 폴더에 추가하기 ──
+    // 2-2. 북마크 폴더에 추가하기
     const shareBookmarkModal = document.getElementById("shareBookmarkModal");
     const shareBookmarkFolderList = document.getElementById("shareBookmarkFolderList");
     const shareBookmarkCreateFolder = document.getElementById("shareBookmarkCreateFolder");
@@ -595,7 +595,7 @@ window.onload = () => {
         shareBookmarkFolderList.innerHTML = html;
     });
 
-    // 폴더 선택 시 북마크 추가
+    // 폴더 선택시 북마크 추가
     if (shareBookmarkFolderList) {
         shareBookmarkFolderList.addEventListener("click", async (e) => {
             const folderBtn = e.target.closest(".bookmark-share-sheet-folder");
@@ -626,7 +626,7 @@ window.onload = () => {
         });
     }
 
-    // 새 폴더 만들기 (커스텀 모달)
+    // 새폴더 만들기
     const createFolderModal = document.getElementById("createFolderModal");
     const createFolderInput = document.getElementById("createFolderInput");
     const createFolderSubmit = document.getElementById("createFolderSubmit");
@@ -634,7 +634,7 @@ window.onload = () => {
     const createFolderCount = document.getElementById("createFolderCount");
 
     if (shareBookmarkCreateFolder && createFolderModal) {
-        shareBookmarkCreateFolder.addEventListener("click", () => {
+        shareBookmarkCreateFolder.addEventListener("click", (e) => {
             console.log("새폴더생성 들어옴1 모달열기");
             shareBookmarkModal.hidden = true;
             createFolderInput.value = "";
@@ -644,13 +644,13 @@ window.onload = () => {
             createFolderInput.focus();
         });
 
-        createFolderInput.addEventListener("input", () => {
+        createFolderInput.addEventListener("input", (e) => {
             const len = createFolderInput.value.length;
             createFolderCount.textContent = len + " / 25";
             createFolderSubmit.disabled = !createFolderInput.value.trim();
         });
 
-        createFolderSubmit.addEventListener("click", async () => {
+        createFolderSubmit.addEventListener("click", async (e) => {
             const folderName = createFolderInput.value.trim();
             if (!folderName) return;
             console.log("새폴더생성 들어옴2:", folderName);
@@ -665,7 +665,7 @@ window.onload = () => {
             }
         });
 
-        createFolderClose.addEventListener("click", () => {
+        createFolderClose.addEventListener("click", (e) => {
             createFolderModal.classList.remove("is-open");
         });
     }
@@ -685,7 +685,7 @@ window.onload = () => {
         }
     });
 
-    // ── 3. 이미지 미리보기 (이벤트 위임) ──
+    // 3. 이미지 미리보기
     const mediaPreviewOverlay = document.getElementById("mediaPreviewOverlay");
     const mediaPreviewImage = document.getElementById("mediaPreviewImage");
     const mediaPreviewClose = document.getElementById("mediaPreviewClose");
@@ -707,7 +707,7 @@ window.onload = () => {
         }
     });
 
-    // ── 3-1. 게시글 클릭 시 상세 이동 ──
+    // 3-1. 게시글 클릭하면 상세로
     document.addEventListener("click", (e) => {
         if (e.target.closest(".postAvatar, .postHeader, .postMedia, .tweet-action-bar")) return;
         const card = e.target.closest(".postCard");
@@ -718,10 +718,10 @@ window.onload = () => {
         }
     });
 
-    // ── 4. 좌측 네비게이션 / 더 보기 / 계정 메뉴 ──
+    // 4. 좌측 네비게이션 더보기
     // /js/common/header.js 에서 모든 페이지(layout, layout-left-one, main) 공통으로 처리한다.
 
-    // ── 5. 검색 ──
+    // 검색
     const searchInput = document.getElementById("searchInput");
     const searchPanel = document.getElementById("searchPanel");
     const searchPanelEmpty = document.getElementById("searchPanelEmpty");
@@ -833,18 +833,18 @@ window.onload = () => {
         }
     });
 
-    // ── 5-1. 팔로우 추천 (사이드바) ──
+    // 5-1. 팔로우 추천 (사이드바)
     const suggestionTitle = document.getElementById("suggestionTitle");
     const suggestionContainer = suggestionTitle ? suggestionTitle.closest(".suggestionCard") : null;
 
-    // ── 6. Connect 버튼 토글 (이벤트 위임) ──
+    // 6. 커넥트 버튼
     const disconnectModal = document.getElementById("disconnectModal");
     const modalTitle = document.getElementById("modalTitle");
     const modalConfirm = document.getElementById("modalConfirm");
     const modalCancel = document.getElementById("modalCancel");
     let disconnectTarget = null;
 
-    // expert 탭 카드 여부 — 카드가 #friendsSection 안에 있으면 Follow/Following/Unfollow 텍스트 사용
+    // expert 탭
     const isExpertButton = (btn) => !!btn.closest("#friendsSection");
 
     function openDisconnectModal(btn) {
@@ -881,7 +881,7 @@ window.onload = () => {
         }
     });
 
-    // expert 카드의 Following 버튼은 hover 시 Unfollow 로 표시
+    // expert 면 Connect 아니고 Following, hover 시 Unfollow 임.
     document.addEventListener("mouseover", (e) => {
         const btn = e.target.closest(".connect-btn.connected, .connect-btn-sm.connected");
         if (!btn || !isExpertButton(btn)) return;
@@ -930,14 +930,14 @@ window.onload = () => {
     }
 
 
-    // 작성/답글 모달 셋업 — 한 번 호출로 양쪽 다 처리 (마크업 없으면 자동 skip).
-    const refreshFeed = () => {
+    // 작성/답글 모달 — 한번 호출로 양쪽 처리 마크업 없으면 자동 skip
+    const refreshFeed = async () => {
         postPage = 1;
-        service.getPostList(postPage, memberId, (data) => {
-            const posts = layout.showPostList(data.posts, postPage);
-            initFollowState(posts);
-            postHasMore = data.criteria.hasMore;
-        });
+        const postData = await service.getPostList(postPage, memberId);
+        const ads = await service.getAds(postPage, 3);
+        const posts = layout.showPostList(postData.posts, ads, postPage);
+        initFollowState(posts);
+        postHasMore = postData.criteria.hasMore;
     };
     postModalApi.bootstrap({
         services: service,
@@ -954,7 +954,7 @@ window.onload = () => {
         }
     });
 
-    // ── 10. 뉴스 로딩 ──
+    // 10. 뉴스 로딩
     const newsFeedList = document.getElementById("newsFeedList");
     if (newsFeedList) {
         service.getLatestNews((newsList) => {
@@ -973,7 +973,7 @@ window.onload = () => {
         });
     }
 
-    // ── 11. 모바일 네비게이션 ──
+    // 11. 모바일 네비게이션
     const mobileItems = document.querySelectorAll(".mobileItem");
     mobileItems.forEach((item) => {
         item.addEventListener("click", (e) => {
@@ -982,7 +982,7 @@ window.onload = () => {
         });
     });
 
-    // ── 11. 환율 피드 ──
+    // 11. 환율 피드
     const exchangeRateFeedContent = document.getElementById("exchangeRateFeedContent");
     const exchangeRateFeedSubtitle = document.getElementById("exchangeRateFeedSubtitle");
 
@@ -1011,7 +1011,7 @@ window.onload = () => {
             .catch((err) => { exchangeRateFeedContent.innerHTML = '<p class="exchangeRateFeedState">환율 정보를 불러오지 못했습니다.</p>'; });
     }
 
-    // ── 12. 사이드바 sticky ──
+    // 12. 사이드바 sticky
     const trendPanel = document.querySelector(".trendPanel");
     if (trendPanel) {
         const updateStickyTop = () => {
@@ -1022,7 +1022,7 @@ window.onload = () => {
         window.addEventListener("resize", updateStickyTop);
     }
 
-    // ── 초기 데이터 로딩 ──
+    // 초기 데이터 로딩
     function load() {
         memberId = loginMember.id;
 
@@ -1041,13 +1041,7 @@ window.onload = () => {
             el.innerHTML = `<img src="/images/profile/default_image.png" alt="" />`;
         });
 
-        service.getAds((ads) => {
-            layout.setAds(ads || []);
-            loadFeed();
-        }).catch((err) => {
-            console.error("광고 로딩 실패:", err);
-            loadFeed();
-        });
+        loadFeed();
 
         if (suggestionContainer) {
             service.getSuggestions(memberId, (members) => {

@@ -142,8 +142,8 @@ const service = (() => {
         return data;
     };
 
-    const getAds = async (callback) => {
-        const response = await fetch('/api/main/ads');
+    const getAds = async (page, count, callback) => {
+        const response = await fetch(`/api/main/ads/list/${page}?count=${count}`);
         const data = await response.json();
         if (callback) return callback(data);
         return data;

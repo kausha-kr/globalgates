@@ -22,11 +22,11 @@ public class SubscriptionQuartzTask {
      *   0 0 0 1 * ? : 매월 1일 마다
      *   * 10-13 * * * * : 매 10, 11, 12, 13분에 동작한다.
      * */
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void check() {
         // 실행할 문장 작성
-        log.info("쿼츠스케줄러들어옴?");
+        log.info("쿼츠 들어옴?");
         subscriptionService.managingSchedule();
-        log.info("yes~");
+        log.info("들어옴");
     }
 }

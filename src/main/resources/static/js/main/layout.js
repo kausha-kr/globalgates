@@ -343,31 +343,15 @@ const layout = (() => {
         //           </div>`;
     };
 
-    let adList = [];
-    let adIndex = 0;
-
-    const setAds = (ads) => {
-        adList = ads || [];
-        adIndex = 0;
-    };
-
-    const getNextAd = () => {
-        if (adList.length === 0) return null;
-        const ad = adList[adIndex % adList.length];
-        adIndex++;
-        return ad;
-    };
-
-    const showPostList = (posts, page) => {
+    const showPostList = (posts, ads, page) => {
         const feedSection = document.getElementById("feedSection");
+        const adList = ads || [];
         let html = "";
+        let adIdx = 0;
         posts.forEach((post, i) => {
             html += post.newsType === 'emergency' ? createNewsCard(post) : createPostCard(post);
-            if (adInterval > 0 && (i + 1) % adInterval === 0) {
-                const ad = getNextAd();
-                if (ad) {
-                    html += createAdCard(ad);
-                }
+            if (adInterval > 0 && (i + 1) % adInterval === 0 && adIdx < adList.length) {
+                html += createAdCard(adList[adIdx++]);
             }
         });
         if (page === 1) {
@@ -412,5 +396,5 @@ const layout = (() => {
         }).join('');
     };
 
-    return { showPostList: showPostList, showExpertList: showExpertList, setAds: setAds, setAdInterval: setAdInterval, setLoginMemberId: setLoginMemberId, buildAvatarDataUri: buildAvatarDataUri, buildMentionDropdown: buildMentionDropdown };
+    return { showPostList: showPostList, showExpertList: showExpertList, setAdInterval: setAdInterval, setLoginMemberId: setLoginMemberId, buildAvatarDataUri: buildAvatarDataUri, buildMentionDropdown: buildMentionDropdown };
 })();

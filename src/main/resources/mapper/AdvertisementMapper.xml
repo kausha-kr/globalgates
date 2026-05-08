@@ -29,7 +29,7 @@
                 #{startedAt}::timestamp)
     </insert>
 
-    <select id="selectAll">
+    <select id="selectAllForMain">
         select a.id,
                a.advertiser_id,
                a.title,
@@ -52,6 +52,7 @@
         from tbl_advertisement a
         join tbl_member m on a.advertiser_id = m.id
         order by a.created_datetime desc
+        limit #{count} offset #{offset}
     </select>
 
     <select id="selectBySearch">

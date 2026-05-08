@@ -379,6 +379,20 @@ create table tbl_ad_file (
     constraint fk_ad_file_ad foreign key(ad_id) references tbl_advertisement(id)
 );
 
+create table tbl_tag_for_ad (
+   id                         bigint       generated always as identity primary key,
+   tag_name                   varchar(255) not null unique,
+   created_datetime           timestamp    not null default now()
+);
+
+create table tbl_ad_tag (
+    id     bigint generated always as identity primary key,
+    ad_id  bigint not null,
+    tag_id bigint not null,
+    constraint fk_ad_ad_tag foreign key(ad_id) references tbl_advertisement(id),
+    constraint fk_tag_ad_tag foreign key(tag_id) references tbl_tag_for_ad(id)
+);
+
 -- ============ 결제 (advertisement, subscription 이후) ============
 
 -- [44] tbl_payment_advertisement

@@ -18,9 +18,11 @@ import java.util.List;
 public interface MainAPIControllerDocs {
     @Operation(
             summary = "피드 광고 조회",
-            description = "메인 피드에 표시할 광고 목록을 조회한다."
+            description = "메인 피드에 표시할 광고 목록을 페이지 단위로 조회한다.",
+            parameters = {@Parameter(name = "page", description = "광고 페이지 번호"),
+                            @Parameter(name = "count", description = "받아올 광고 개수")}
     )
-    public List<AdvertisementDTO> getAds();
+    public List<AdvertisementDTO> getAds(@PathVariable int page, @RequestParam int count);
 
     @Operation(
             summary = "게시글 목록 조회",

@@ -38,11 +38,11 @@ public class MainAPIController implements MainAPIControllerDocs {
     private final com.app.globalgates.repository.MentionDAO mentionDAO;
 
 //    피드에 광고
-    @GetMapping("/ads")
+    @GetMapping("/ads/list/{page}")
     @LogStatusWithReturn
-    public List<AdvertisementDTO> getAds() {
+    public List<AdvertisementDTO> getAds(@PathVariable int page, @RequestParam int count) {
         log.info("광고 조회");
-        List<AdvertisementDTO> ads = advertisementService.getAdsInMain();
+        List<AdvertisementDTO> ads = advertisementService.getAdsInMain(page, count);
         ads.forEach(ad -> {
             ad.setImgUrls(convertToPresignedUrl(ad.getImgUrls()));
             if (ad.getAdvertiserProfileFileName() != null) {

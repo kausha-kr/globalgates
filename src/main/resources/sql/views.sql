@@ -20,46 +20,41 @@ drop view if exists view_post_feed;
 
 -- 게시물 관련된 모든 정보 조회하는 view
 create view view_post_feed as
-select p.id,
-       p.member_id,
-       p.post_status,
-       p.title                                                                                        as post_title,
-       p.content                                                                                      as post_content,
-       p.location,
-       p.reply_post_id,
-       p.created_datetime,
-       p.updated_datetime,
-       m.member_name                                                                                  as member_nickname,
-       m.member_handle,
+select p.id, p.member_id, p.post_status,
+       p.title as post_title, p.content as post_content,
+       p.location, p.reply_post_id, p.created_datetime, p.updated_datetime,
+       m.member_name as member_nickname, m.member_handle,
        (select f.file_name
         from tbl_member_profile_file mpf
                  join tbl_file f on mpf.id = f.id
         where mpf.member_id = p.member_id
           and mpf.profile_image_type = 'profile'
-        limit 1)                                                                                      as member_profile_file_name,
+        limit 1) as member_profile_file_name,
        (select count(*)
         from tbl_post_like pl
-        where pl.post_id = p.id)                                                                      as like_count,
-       (select count(*) from tbl_post rp where rp.reply_post_id = p.id and rp.post_status = 'active') as reply_count,
+        where pl.post_id = p.id) as like_count,
+       (select count(*)
+        from tbl_post rp
+        where rp.reply_post_id = p.id and rp.post_status = 'active') as reply_count,
        p.post_read_count,
        bg.badge_type,
        p.community_id,
        c.community_name,
-       rel.product_post_id                                                                            as product_id,
-       pp.product_price                                                                               as product_price,
-       pp.product_stock                                                                               as product_stock,
-       ap.title                                                                                       as product_title,
-       ap.content                                                                                     as product_content,
+       rel.product_post_id as product_id,
+       pp.product_price    as product_price,
+       pp.product_stock    as product_stock,
+       ap.title            as product_title,
+       ap.content          as product_content,
        (select string_agg(h.tag_name, ',' order by r.id)
         from tbl_post_hashtag h
                  join tbl_post_hashtag_rel r on h.id = r.hashtag_id
-        where r.post_id = rel.product_post_id)                                                        as product_hashtags,
+        where r.post_id = rel.product_post_id) as product_hashtags,
        (select f.file_path
         from tbl_post_file pf
                  join tbl_file f on pf.file_id = f.id
         where pf.post_id = rel.product_post_id
         order by f.id asc
-        limit 1)                                                                                      as product_image
+        limit 1)                               as product_image
 from tbl_post p
          join tbl_member m on p.member_id = m.id
          left join tbl_badge bg on bg.member_id = p.member_id

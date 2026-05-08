@@ -138,11 +138,12 @@ public class AdvertisementService {
         advertisementDAO.delete(id);
     }
 
-    // 피드용 광고목록
+    // 피드용 광고목록 (페이지 단위)
     @Cacheable(value = "ad:list", key = "'main'")
     @LogStatusWithReturn
-    public List<AdvertisementDTO> getAdsInMain() {
-        return advertisementDAO.findAll().stream()
+    public List<AdvertisementDTO> getAdsInMain(int page, int count) {
+        int offset = (page - 1) * count;
+        return advertisementDAO.findAllForMain(count, offset).stream()
                 .map(adDTO -> {
                     List<FileAdvertisementDTO> images = fileAdvertisementDAO.findByAdId(adDTO.getId());
                     if (!images.isEmpty()) {
