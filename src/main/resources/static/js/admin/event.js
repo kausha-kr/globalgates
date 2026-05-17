@@ -1,4 +1,4 @@
-﻿window.onload = () => {
+window.onload = () => {
 
 
     const portals = document.querySelectorAll(".each-menu");
@@ -1868,6 +1868,7 @@
     const chartPalette = ['#0f1419', '#536471', '#cfd9de', '#1d9bf0', '#eff3f4', '#8ecdf8', '#7a8b95'];
 
     const formatNumber = (value) => new Intl.NumberFormat("ko-KR").format(Number(value || 0));
+    const formatWon = (value) => `${formatNumber(Math.round(Number(value || 0)))}원`;
 
     const sumPointValues = (points = [], secondary = false) =>
         points.reduce((total, point) => total + Number(secondary ? (point.secondaryValue ?? 0) : (point.value ?? 0)), 0);
@@ -1938,11 +1939,10 @@
 
         document.querySelector("#statsMemberTotal").textContent = formatNumber(totalMembers);
         document.querySelector("#statsMemberJoined").textContent = formatNumber(findLastPointValue(memberTrendMonthlyRows));
-        document.querySelector("#statsMemberDropped").textContent = formatNumber(findLastPointValue(memberTrendMonthlyRows, true));
         document.querySelector("#statsMemberBusyHour").textContent = formatHourLabel(busiestHour?.label);
         document.querySelector("#statsMemberFree").textContent = formatNumber(findExactPointValue(memberTypes, ["free"]));
         document.querySelector("#statsMemberPro").textContent = formatNumber(findExactPointValue(memberTypes, ["pro"]));
-        document.querySelector("#statsMemberProPlus").textContent = formatNumber(findExactPointValue(memberTypes, ["pro+"]));
+        document.querySelector("#statsMemberProPlus").textContent = formatNumber(findExactPointValue(memberTypes, ["pro+", "pro_plus"]));
         document.querySelector("#statsMemberExpert").textContent = formatNumber(findExactPointValue(memberTypes, ["expert"]));
 
         document.querySelector("#statsPostTotal").textContent = formatNumber(totalPosts);
@@ -1958,6 +1958,77 @@
         document.querySelector("#statsReportRejected").textContent = formatNumber(findPointValue(reportStatuses, ["rejected", "반려"]));
     };
 
+    const buildRevenuePredictionPayload = () => {
+        const memberTypes = adminStatsDashboard?.memberTypes ?? [];
+        const memberTrend7d = adminStatsDashboard?.memberTrend?.["7d"] ?? [];
+        const memberTrend30d = adminStatsDashboard?.memberTrend?.["30d"] ?? [];
+        const reportMonthly30d = adminStatsDashboard?.reportMonthly?.["30d"] ?? [];
+        const now = new Date();
+        const day = now.getDay();
+
+        const freeMembers = findExactPointValue(memberTypes, ["free"]);
+        const proMembers = findExactPointValue(memberTypes, ["pro"]);
+        const proPlusMembers = findExactPointValue(memberTypes, ["pro+", "pro_plus"]);
+        const expertMembers = findExactPointValue(memberTypes, ["expert"]);
+        const totalMembers = Math.max(Number(adminStatsDashboard?.totalMemberCount ?? 0), 1);
+        const paidMembers = proMembers + proPlusMembers + expertMembers;
+        const newMembers7d = sumPointValues(memberTrend7d);
+        const droppedMembers7d = sumPointValues(memberTrend7d, true);
+        const droppedMembers30d = sumPointValues(memberTrend30d, true);
+
+        return {
+            month: now.getMonth() + 1,
+            weekday: (day + 6) % 7,
+            isWeekend: [0, 6].includes(day) ? 1 : 0,
+            freeMembers,
+            proMembers,
+            proPlusMembers,
+            expertMembers,
+            newMembers7d,
+            newPaidSubscriptions7d: Math.max(0, Math.round(newMembers7d * (paidMembers / totalMembers) * 0.4)),
+            expiredSubscriptions7d: Math.max(0, Math.round(droppedMembers7d * 0.45)),
+            cancelledSubscriptions7d: Math.max(0, Math.round(droppedMembers7d * 0.55)),
+            reactivatedSubscriptions7d: Math.max(0, Math.round(droppedMembers30d * 0.05)),
+            avgSubscriptionAgeDays: Math.round(90 + (paidMembers / totalMembers) * 120),
+            paymentSuccessRate: 0.93,
+            discountRate: 0.12,
+            marketingSpend: Math.max(500000, Math.round(totalMembers * 55)),
+            supportTicketCount7d: sumPointValues(reportMonthly30d),
+        };
+    };
+
+    const renderRevenuePrediction = (result) => {
+        const valueEl = document.querySelector("#statsAiRevenue");
+        if (!valueEl) return;
+
+        const expectedRevenue = Number(result?.expectedMonthlyRevenue);
+        if (!result || !Number.isFinite(expectedRevenue) || expectedRevenue <= 0) {
+            valueEl.textContent = "연결 실패";
+            return;
+        }
+
+        valueEl.textContent = formatWon(expectedRevenue);
+    };
+
+    const loadRevenuePrediction = async () => {
+        const valueEl = document.querySelector("#statsAiRevenue");
+        if (valueEl) valueEl.textContent = "계산중";
+
+        try {
+            const payload = buildRevenuePredictionPayload();
+            const result = await requestJson("/api/ai/admin/revenue/predict", {
+                method: "POST",
+                body: payload,
+            });
+            renderRevenuePrediction(result);
+        } catch (error) {
+            console.error(error);
+            renderRevenuePrediction({
+                status: "unavailable",
+                message: "AI 예측을 불러오지 못했습니다.",
+            });
+        }
+    };
     const getSeriesRows = (map, period, useSecondary = false) =>
         (map?.[period] ?? []).map((point) => [
             point.label,
@@ -1987,6 +2058,7 @@
         try {
             adminStatsDashboard = await fetchJson("/api/admin/stats/dashboard");
             redrawLoadedCharts();
+            await loadRevenuePrediction();
         } catch (error) {
             console.error(error);
         }

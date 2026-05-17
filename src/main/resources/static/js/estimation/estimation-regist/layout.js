@@ -24,6 +24,8 @@ const estimationLayout = (() => {
     // 견적요청 모달의 상품 선택 카드 1개를 만든다.
     const createProductItem = (product) => {
         const productName = (product.postTitle ?? "상품").trim();
+        const productContent = (product.postContent ?? "").trim();
+        const productCategory = (product.categoryName ?? product.productCategoryId ?? "").toString().trim();
         const productMeta = formatProductMeta(product);
         const productTags = formatProductTags(product);
         const productImage = product.postFiles?.[0] ?? "/images/main/global-gates-logo.png";
@@ -33,7 +35,12 @@ const estimationLayout = (() => {
                     class="productSelectModal__item"
                     data-product-id="${product.id ?? ""}"
                     data-product-name="${productName}"
+                    data-product-content="${productContent}"
+                    data-product-category="${productCategory}"
                     data-product-meta="${productMeta}"
+                    data-product-price="${product.productPrice ?? ""}"
+                    data-product-stock="${product.productStock ?? ""}"
+                    data-product-tags="${productTags}"
                     data-product-image="${productImage}"
                     aria-pressed="false">
                 <span class="productSelectModal__checkbox" aria-hidden="true">

@@ -2479,3 +2479,166 @@ window.onload = () => {
 
     initializeStageOneChat();
 };
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const chatInput = document.getElementById("chat-input");
+    const chatForm = document.getElementById("chatSubmit");
+    const inputWrapper = document.querySelector(".ChatPage-Input-Wrapper");
+    const messageList = document.querySelector(".ChatPage-Main-Content");
+
+    if (!chatInput || !chatForm || !inputWrapper || document.querySelector(".ChatAiSuggest")) {
+        return;
+    }
+
+    const suggestWrap = document.createElement("div");
+    suggestWrap.className = "ChatAiSuggest off";
+    suggestWrap.innerHTML = "<div class=\"ChatAiSuggest-Bar\"><span>AI</span><button type=\"button\" class=\"ChatAiSuggest-Refresh\" aria-label=\"\uCD94\uCC9C\uBB38\uC7A5 \uC0C8\uB85C\uACE0\uCE68\">\u21bb</button></div><div class=\"ChatAiSuggest-Chips\"></div>";
+    inputWrapper.insertBefore(suggestWrap, chatForm);
+
+    const chips = suggestWrap.querySelector(".ChatAiSuggest-Chips");
+    const refreshBtn = suggestWrap.querySelector(".ChatAiSuggest-Refresh");
+    let timer = null;
+    let lastKey = "";
+    let loading = false;
+    let refreshNonce = 0;
+
+    const escapeHtml = (value) => String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    const getRecentMessages = () => {
+        if (!messageList) return "";
+        return Array.from(messageList.querySelectorAll(".Each-Main-Content"))
+            .slice(-8)
+            .map((item) => {
+                const content = item.querySelector(".Message-Content");
+                const speaker = item.classList.contains("Right") ? "\uB098: " : "\uC0C1\uB300: ";
+                return speaker + (content || item).textContent.replace(/\s+/g, " ").trim();
+            })
+            .filter(Boolean)
+            .join(" / ")
+            .slice(-1000);
+    };
+
+    const inferIntent = (draft, recentMessages = "") => {
+        const ownMessages = recentMessages.split("/").filter((line) => line.trim().startsWith("\uB098:"));
+        const ownText = ownMessages.join(" ");
+        if (/\uC57C|\uC7A5\uB09C|\uB9D0\uC774\uB418|\uB108\uBB34\uD558|\uC9C4\uC9DC|\uD654\uB098|\uC9DC\uC99D|\uC544\uB2C8/.test(ownText)) return "\uBD88\uB9CC\uC744 \uC815\uC911\uD558\uAC8C \uD45C\uD604\uD558\uAE30";
+        if (/\uAC10\uC0AC|\uACE0\uB9C8/.test(draft)) return "\uAC10\uC0AC \uC778\uC0AC\uD558\uAE30";
+        if (/\uC8C4\uC1A1|\uBBF8\uC548/.test(draft)) return "\uC0AC\uACFC\uD558\uAE30";
+        if (/\uD655\uC778|\uC54C\uACA0/.test(draft)) return "\uD655\uC778\uD588\uB2E4\uACE0 \uB9D0\uD558\uAE30";
+        if (/\uB2E4\uC2DC|\uC5F0\uB77D/.test(draft)) return "\uB2E4\uC74C\uC5D0 \uB2E4\uC2DC \uB9D0\uD558\uAE30";
+        return "\uBD80\uB4DC\uB7FD\uAC8C \uB9C8\uBB34\uB9AC\uD558\uAE30";
+    };
+
+    const inferEmotion = (draft) => {
+        if (/\uAC10\uC0AC|\uACE0\uB9C8/.test(draft)) return "\uACE0\uB9C8\uC6C0";
+        if (/\uC8C4\uC1A1|\uBBF8\uC548/.test(draft)) return "\uBBF8\uC548\uD568";
+        return "\uC911\uB9BD";
+    };
+
+    const hideSuggestions = () => {
+        suggestWrap.classList.add("off");
+        chips.innerHTML = "";
+        lastKey = "";
+    };
+
+    const renderLoading = () => {
+        chips.innerHTML = [0, 1, 2].map(() => '<div class="ChatAiSuggest-Chip ChatAiSuggest-Chip--loading"><span></span></div>').join("");
+        suggestWrap.classList.remove("off");
+    };
+
+    const renderChips = (recommendations) => {
+        const items = Array.isArray(recommendations) ? recommendations.filter(Boolean).slice(0, 3) : [];
+        if (items.length === 0) {
+            hideSuggestions();
+            return;
+        }
+        chips.innerHTML = items.map((text) => '<button type="button" class="ChatAiSuggest-Chip">' + escapeHtml(text) + '</button>').join("");
+        suggestWrap.classList.remove("off");
+    };
+
+    const loadSuggestions = async (force = false) => {
+        const draft = chatInput.value.trim();
+        if (!draft) {
+            hideSuggestions();
+            return;
+        }
+        const recentMessages = getRecentMessages();
+        const key = draft + "|" + recentMessages + "|" + refreshNonce;
+        if (!force && key === lastKey) return;
+        lastKey = key;
+        if (loading) return;
+        loading = true;
+        if (refreshBtn) refreshBtn.disabled = true;
+        renderLoading();
+
+        try {
+            const response = await fetch("/api/ai/llm/chat/recommendations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    recentMessages,
+                    conversationStage: "\uB300\uD654 \uC911",
+                    userIntent: inferIntent(draft, recentMessages),
+                    tone: "\uC815\uC911\uD558\uAC8C",
+                    emotionState: inferEmotion(draft),
+                    topic: "\uCC44\uD305",
+                    draftInput: draft,
+                    refreshNonce,
+                    useLlm: false
+                })
+            });
+            if (!response.ok) throw new Error("LLM request failed: " + response.status);
+            const data = await response.json();
+            renderChips(data.recommendations);
+        } catch (error) {
+            console.error(error);
+            renderChips([
+                "\uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uC790\uC138\uD788 \uC0B4\uD3B4\uBCF4\uACE0 \uB2E4\uC2DC \uB9D0\uC500\uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4.",
+                "\uACF5\uC720\uD574\uC8FC\uC154\uC11C \uAC10\uC0AC\uD569\uB2C8\uB2E4. \uD655\uC778 \uD6C4 \uB2F5\uBCC0\uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4.",
+                "\uC88B\uC2B5\uB2C8\uB2E4. \uD544\uC694\uD55C \uB0B4\uC6A9 \uC815\uB9AC\uD574\uC11C \uB2E4\uC2DC \uC5F0\uB77D\uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4."
+            ]);
+        } finally {
+            loading = false;
+            if (refreshBtn) refreshBtn.disabled = false;
+        }
+    };
+
+    chatInput.addEventListener("input", () => {
+        clearTimeout(timer);
+        if (!chatInput.value.trim()) {
+            hideSuggestions();
+            return;
+        }
+        timer = setTimeout(() => loadSuggestions(false), 450);
+    });
+
+    chatInput.addEventListener("focus", () => {
+        if (chatInput.value.trim()) loadSuggestions(false);
+    });
+
+    refreshBtn?.addEventListener("click", () => {
+        refreshNonce += 1;
+        lastKey = "";
+        loadSuggestions(true);
+    });
+
+    chips.addEventListener("click", (event) => {
+        const chip = event.target.closest(".ChatAiSuggest-Chip");
+        if (!chip || chip.classList.contains("ChatAiSuggest-Chip--loading")) return;
+        chatInput.value = chip.textContent.trim();
+        chatInput.dispatchEvent(new Event("input", { bubbles: true }));
+        chatInput.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }));
+        chatInput.focus();
+        hideSuggestions();
+    });
+
+    chatForm?.addEventListener("submit", () => {
+        hideSuggestions();
+    });
+});

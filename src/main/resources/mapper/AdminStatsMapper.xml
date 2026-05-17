@@ -46,9 +46,25 @@
         order by label
     </select>
     <select id="selectMemberTypes" resultType="com.app.globalgates.dto.ChartPointDTO">
-        select cast(member_role as text) as label, count(*) as value
-        from tbl_member
-        group by member_role
+        select case
+                   when m.member_role = 'expert' then 'expert'
+                   else coalesce(cast(sub.tier as varchar), 'free')
+               end as label,
+               count(*) as value
+        from tbl_member m
+        left join lateral (
+            select s.tier,
+                   s.status
+            from tbl_subscription s
+            where s.member_id = m.id
+              and s.status = 'active'
+            order by s.id desc
+            limit 1
+        ) sub on true
+        group by case
+                     when m.member_role = 'expert' then 'expert'
+                     else coalesce(cast(sub.tier as varchar), 'free')
+                 end
         order by value desc, label asc
     </select>
     <select id="selectHourlyVisits" resultType="com.app.globalgates.dto.ChartPointDTO">

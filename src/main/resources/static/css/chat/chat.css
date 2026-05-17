@@ -3120,3 +3120,177 @@ button[name="delete"] {
     box-shadow: 0 0 0 2px #fff;
 }
 
+
+
+.ChatAiSuggest {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width: calc(100% - 112px);
+    margin-left: 112px;
+    margin-bottom: 8px;
+}
+
+.ChatAiSuggest.off {
+    display: none;
+}
+
+.ChatAiSuggest-Bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 2px;
+}
+
+.ChatAiSuggest-Bar span {
+    color: #1d9bf0;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.ChatAiSuggest-Refresh {
+    width: 26px;
+    height: 26px;
+    border: 1px solid #d7e3ea;
+    border-radius: 999px;
+    background: #fff;
+    color: #1d9bf0;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.ChatAiSuggest-Refresh:hover {
+    border-color: #9ed0ef;
+    background: #f5fbff;
+    transform: rotate(25deg);
+}
+
+.ChatAiSuggest-Refresh:disabled {
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
+}
+
+.ChatAiSuggest-Chips {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.ChatAiSuggest-Chip {
+    width: 100%;
+    min-height: 38px;
+    padding: 9px 14px;
+    border: 1px solid #d7e3ea;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #0f1419;
+    box-shadow: 0 2px 8px rgba(15, 20, 25, 0.08);
+    font-size: 14px;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ChatAiSuggest-Chip:hover {
+    border-color: #9ed0ef;
+    background: #f5fbff;
+    box-shadow: 0 4px 12px rgba(15, 20, 25, 0.12);
+    transform: translateY(-1px);
+}
+
+
+.ChatAiSuggest:not(.off) {
+    animation: ChatAiSuggestPanelIn 0.2s ease both;
+}
+
+.ChatAiSuggest-Chip {
+    position: relative;
+    overflow: hidden;
+    animation: ChatAiSuggestChipIn 0.22s ease both;
+}
+
+.ChatAiSuggest-Chip:nth-child(2) {
+    animation-delay: 0.04s;
+}
+
+.ChatAiSuggest-Chip:nth-child(3) {
+    animation-delay: 0.08s;
+}
+
+.ChatAiSuggest-Chip::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 0%, rgba(29, 155, 240, 0.08) 45%, transparent 70%);
+    transform: translateX(-110%);
+    animation: ChatAiSuggestShimmer 2.4s ease-in-out infinite;
+}
+
+.ChatAiSuggest-Chip--loading {
+    height: 38px;
+    cursor: default;
+}
+
+.ChatAiSuggest-Chip--loading span {
+    display: block;
+    width: 72%;
+    height: 12px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #edf4f8 0%, #dcecf6 45%, #edf4f8 90%);
+    background-size: 220% 100%;
+    animation: ChatAiSuggestPulse 1s ease-in-out infinite;
+}
+
+.ChatAiSuggest-Chip--loading:hover {
+    border-color: #d7e3ea;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(15, 20, 25, 0.08);
+    transform: none;
+}
+
+@keyframes ChatAiSuggestPanelIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ChatAiSuggestChipIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px) scale(0.99);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes ChatAiSuggestShimmer {
+    0%, 65% {
+        transform: translateX(-110%);
+    }
+    100% {
+        transform: translateX(110%);
+    }
+}
+
+@keyframes ChatAiSuggestPulse {
+    0% {
+        background-position: 120% 0;
+    }
+    100% {
+        background-position: -120% 0;
+    }
+}

@@ -40,6 +40,18 @@
                 </th:block>
                 <a class="suggestionLink sidebarMoreLink" href="/friends">더 보기</a>
             </section>
+            <section class="suggestionCard sidebarCard aiExpertRecommendationCard" data-ai-expert-card data-ai-expanded="false">
+                <h2 class="suggestionTitle">AI 전문가 추천</h2>
+                <div class="aiExpertRecommendationList" data-ai-expert-list>
+                    <div class="suggestionItem suggestionItem--empty aiExpertLoadingItem">
+                        <div class="suggestionProfile">
+                            <span class="suggestionName">추천 전문가를 불러오는 중입니다.</span>
+                            <span class="sidebar-user-handle">수출입 정보 기반으로 매칭합니다.</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="suggestionLink sidebarMoreLink aiExpertMoreButton" data-ai-expert-more hidden>더 보기</button>
+            </section>
             <section class="exchangeRateFeedCard sidebarCard" id="exchangeRateFeedCard">
                 <div class="exchangeRateFeedHeader">
                     <h2 class="exchangeRateFeedTitle" id="exchangeRateFeedTitle">환율</h2>

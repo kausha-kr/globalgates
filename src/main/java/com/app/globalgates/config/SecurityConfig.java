@@ -49,6 +49,7 @@ public class SecurityConfig {
 //                                필터 체인(인증)을 제외할 경로
                                 "/api/auth/**",
                                 "/api/member/**",
+                                "/api/ai/**",
                                 "/api/messages/**",
                                 "/api/mail/**",
                                 "/member/join",
@@ -92,7 +93,6 @@ public class SecurityConfig {
     }
 
 }
-
 
 
 

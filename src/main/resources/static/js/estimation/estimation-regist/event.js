@@ -51,6 +51,9 @@ window.addEventListener("load", function () {
     const selectedProductName = document.getElementById("selectedProductName");
     const selectedProductMeta = document.getElementById("selectedProductMeta");
     const selectedProductRemove = document.getElementById("selectedProductRemove");
+    const aiReviewPanel = document.getElementById("estimationAiReviewPanel");
+    const aiReviewResult = document.getElementById("estimationAiReviewResult");
+    const aiReviewMeta = document.getElementById("estimationAiReviewMeta");
 
     // 전문가 공유 시트 + 연결된 프로필
     const userLinkButton = document.getElementById("composerUserLinkButton");
@@ -109,6 +112,10 @@ window.addEventListener("load", function () {
         mapsLoaderPromise: null,
         productItems: [],
         isTagEditorOpen: false,
+        aiReview: null,
+        aiReviewKey: "",
+        aiReviewTimer: null,
+        aiReviewRequestId: 0,
     };
 
     // ╔══════════════════════════════════════════════════╗
@@ -116,6 +123,68 @@ window.addEventListener("load", function () {
     // ╚══════════════════════════════════════════════════╝
     const safeText = (value, fallback = "") => (value || fallback).trim();
     const specialCharRegex = /[\{\}\[\]\?.,;:|\)*~`!^\-_+<>@\#$%&\\=\(\'\"]/;
+    let scheduleAiReview = () => {};
+    let runAiReviewNow = async () => null;
+
+    const resetAiReview = () => {
+        if (state.aiReviewTimer) {
+            clearTimeout(state.aiReviewTimer);
+            state.aiReviewTimer = null;
+        }
+        state.aiReview = null;
+        state.aiReviewKey = "";
+        state.aiReviewRequestId += 1;
+        if (!aiReviewPanel) return;
+        aiReviewPanel.hidden = true;
+        aiReviewPanel.dataset.state = "idle";
+        if (aiReviewResult) aiReviewResult.textContent = "검토 대기";
+        if (aiReviewMeta) aiReviewMeta.textContent = "요청 전에 자동으로 확인합니다.";
+    };
+
+    const renderAiReview = (status, result = null) => {
+        if (!aiReviewPanel) return;
+        aiReviewPanel.hidden = false;
+        aiReviewPanel.dataset.state = status;
+
+        if (status === "checking") {
+            if (aiReviewResult) aiReviewResult.textContent = "검토 중";
+            if (aiReviewMeta) aiReviewMeta.textContent = "입력한 견적 요청 내용을 확인하고 있습니다.";
+            return;
+        }
+
+        if (status === "error") {
+            if (aiReviewResult) aiReviewResult.textContent = "AI 연결 오류";
+            if (aiReviewMeta) aiReviewMeta.textContent = "서버 연결 문제로 자동 검토를 못했습니다.";
+            return;
+        }
+
+        if (result?.status === "unavailable" || result?.prediction === "unavailable") {
+            aiReviewPanel.dataset.state = "error";
+            if (aiReviewResult) aiReviewResult.textContent = "AI 연결 오류";
+            if (aiReviewMeta) aiReviewMeta.textContent = result?.message || "서버 연결 문제로 자동 검토를 못했습니다.";
+            return;
+        }
+
+        if (result?.status === "needs_input") {
+            aiReviewPanel.dataset.state = "reject";
+            if (aiReviewResult) aiReviewResult.textContent = "내용 보완 필요";
+            if (aiReviewMeta) aiReviewMeta.textContent = result?.message || "요청 내용을 더 구체적으로 작성해 주세요.";
+            return;
+        }
+
+        const prediction = result?.prediction || result?.isEstimation || "unknown";
+        const probability = typeof result?.probability === "number"
+            ? `${Math.round(result.probability * 100)}%`
+            : "-";
+        const isApprove = prediction === "approve";
+        aiReviewPanel.dataset.state = isApprove ? "approve" : "reject";
+        if (aiReviewResult) aiReviewResult.textContent = isApprove ? "등록 가능" : "재확인 필요";
+        if (aiReviewMeta) {
+            aiReviewMeta.textContent = isApprove
+                ? `승인 가능성이 높습니다. 판단 점수 ${probability}`
+                : `거절 가능성이 있습니다. 판단 점수 ${probability}`;
+        }
+    };
 
     // 제목 / 가격 / 내용 / 상품 다 차야 제출 버튼 활성화.
     const syncSubmitState = () => {
@@ -196,6 +265,8 @@ window.addEventListener("load", function () {
         if (productTagInput) productTagInput.value = "";
         syncTagEditor();
         syncTagDock();
+        resetAiReview();
+        scheduleAiReview();
         return true;
     };
 
@@ -345,15 +416,31 @@ window.addEventListener("load", function () {
         if (!composerForm) return;
 
         requiredFields.forEach((field) => {
-            field.addEventListener("input", syncSubmitState);
+            field.addEventListener("input", () => {
+                resetAiReview();
+                syncSubmitState();
+                scheduleAiReview();
+            });
         });
 
         const buildPayload = () => {
             const tagDivs = tagInput ? Array.from(tagInput.querySelectorAll(".tagDiv")) : [];
+            const tagNames = tagDivs
+                .map((el) => el.textContent.replace(/^#/, "").trim())
+                .filter(Boolean);
             const descriptionParts = [
                 safeText(summaryInput?.value),
                 safeText(contentInput?.value),
             ].filter(Boolean);
+            const selectedProductItem = state.productItems.find(
+                (item) => item.dataset.productId === state.selectedProductId
+            );
+            const productPrice = Number(selectedProductItem?.dataset.productPrice || summaryInput?.value || 0);
+            const productStock = Number(selectedProductItem?.dataset.productStock || 0);
+            const productName = selectedProductItem?.dataset.productName || "";
+            const productContent = selectedProductItem?.dataset.productContent || "";
+            const productCategory = selectedProductItem?.dataset.productCategory || tagNames[0] || "Unknown";
+
             return {
                 requesterId: 1,
                 receiverId: state.selectedReceiverId ? Number(state.selectedReceiverId) : null,
@@ -364,10 +451,95 @@ window.addEventListener("load", function () {
                 deadLine: null,
                 status: "requesting",
                 receiverEmail: state.selectedReceiverEmail || null,
-                tags: tagDivs.map((el) => ({
-                    tagName: el.textContent.replace(/^#/, "").trim(),
-                })),
+                productName,
+                productContent,
+                productPrice: Number.isFinite(productPrice) ? productPrice : 0,
+                productStock: Number.isFinite(productStock) ? productStock : 0,
+                productCategory,
+                tagCount: tagNames.length,
+                tags: tagNames.map((tagName) => ({ tagName })),
             };
+        };
+
+        const canReviewPayload = (payload) => (
+            payload.receiverId
+            && payload.title
+            && payload.content
+            && payload.productId
+        );
+
+        const getAiReviewKey = (payload) => JSON.stringify({
+            receiverId: payload.receiverId,
+            productId: payload.productId,
+            title: payload.title,
+            content: payload.content,
+            location: payload.location,
+            productPrice: payload.productPrice,
+            productStock: payload.productStock,
+            productCategory: payload.productCategory,
+            productName: payload.productName,
+            productContent: payload.productContent,
+            tagCount: payload.tagCount,
+        });
+
+        runAiReviewNow = async () => {
+            const payload = buildPayload();
+            if (!canReviewPayload(payload)) {
+                resetAiReview();
+                return null;
+            }
+
+            const reviewKey = getAiReviewKey(payload);
+            if (state.aiReview && state.aiReviewKey === reviewKey) {
+                return state.aiReview;
+            }
+
+            if (state.aiReviewTimer) {
+                clearTimeout(state.aiReviewTimer);
+                state.aiReviewTimer = null;
+            }
+
+            const requestId = state.aiReviewRequestId + 1;
+            state.aiReviewRequestId = requestId;
+            renderAiReview("checking");
+
+            try {
+                const aiResult = await estimationService.classifyEstimation(payload);
+                if (requestId !== state.aiReviewRequestId) return null;
+                if (aiResult?.status === "unavailable" || aiResult?.prediction === "unavailable") {
+                    state.aiReview = null;
+                    state.aiReviewKey = reviewKey;
+                    renderAiReview("error", aiResult);
+                    return null;
+                }
+                if (aiResult?.status === "needs_input") {
+                    state.aiReview = aiResult;
+                    state.aiReviewKey = reviewKey;
+                    renderAiReview("done", aiResult);
+                    return aiResult;
+                }
+                state.aiReview = aiResult;
+                state.aiReviewKey = reviewKey;
+                renderAiReview("done", aiResult);
+                return aiResult;
+            } catch (aiError) {
+                if (requestId !== state.aiReviewRequestId) return null;
+                console.error(aiError);
+                state.aiReview = null;
+                state.aiReviewKey = reviewKey;
+                renderAiReview("error");
+                return null;
+            }
+        };
+
+        scheduleAiReview = () => {
+            const payload = buildPayload();
+            if (!canReviewPayload(payload)) return;
+            if (state.aiReviewTimer) clearTimeout(state.aiReviewTimer);
+            state.aiReviewTimer = setTimeout(() => {
+                state.aiReviewTimer = null;
+                void runAiReviewNow();
+            }, 700);
         };
 
         const resetForm = () => {
@@ -395,6 +567,7 @@ window.addEventListener("load", function () {
                 linkedProfile.setAttribute("aria-hidden", "true");
             }
             if (selectedProductPreview) selectedProductPreview.hidden = true;
+            resetAiReview();
             syncSubmitState();
             syncLocationUI();
         };
@@ -414,6 +587,25 @@ window.addEventListener("load", function () {
 
             if (submitButton) submitButton.disabled = true;
             try {
+                let aiResult = await runAiReviewNow();
+                if (!aiResult) {
+                    renderAiReview("error");
+                    const continueWithoutAi = window.confirm("AI 검토를 완료하지 못했습니다. 그래도 견적 요청을 등록할까요?");
+                    if (!continueWithoutAi) {
+                        syncSubmitState();
+                        return;
+                    }
+                }
+
+                const prediction = aiResult?.prediction || aiResult?.isEstimation;
+                if (prediction === "reject") {
+                    const confirmed = window.confirm("AI가 거절 가능성이 있다고 판단했습니다. 내용을 확인한 뒤 그래도 등록할까요?");
+                    if (!confirmed) {
+                        syncSubmitState();
+                        return;
+                    }
+                }
+
                 await estimationService.writeEstimation(payload);
                 alert("견적 요청이 등록되었습니다.");
                 resetForm();
@@ -560,6 +752,7 @@ window.addEventListener("load", function () {
             if (clearProduct) {
                 state.selectedProductId = "";
                 if (selectedProductPreview) selectedProductPreview.hidden = true;
+                resetAiReview();
             }
 
             if (!state.selectedMemberId) {
@@ -620,6 +813,7 @@ window.addEventListener("load", function () {
             const item = event.target.closest(".productSelectModal__item");
             if (!item) return;
             state.selectedProductId = item.dataset.productId || "";
+            resetAiReview();
             syncProductSelection();
         });
 
@@ -639,12 +833,14 @@ window.addEventListener("load", function () {
         // 확인 버튼 → 미리보기 갱신 + 모달 닫기
         productSelectConfirm?.addEventListener("click", () => {
             renderSelectedProduct();
+            scheduleAiReview();
             panel.close();
         });
 
         // 미리보기 X 버튼 → 선택 해제
         selectedProductRemove?.addEventListener("click", () => {
             state.selectedProductId = "";
+            resetAiReview();
             syncProductSelection();
             renderSelectedProduct();
         });
@@ -733,6 +929,7 @@ window.addEventListener("load", function () {
 
             state.selectedReceiverId = button.dataset.shareUserId || "";
             state.selectedReceiverEmail = button.dataset.shareUserEmail || "";
+            resetAiReview();
             if (linkedProfile) {
                 linkedProfile.hidden = false;
                 linkedProfile.setAttribute("aria-hidden", "false");
@@ -745,6 +942,7 @@ window.addEventListener("load", function () {
                 linkedProfileEmail.textContent = state.selectedReceiverEmail || "unknown";
             }
             syncSubmitState();
+            scheduleAiReview();
             panel.close();
         });
     };
@@ -900,12 +1098,16 @@ window.addEventListener("load", function () {
             }
             syncLocationUI();
             syncSubmitState();
+            resetAiReview();
+            scheduleAiReview();
         });
 
         // 적용 → pendingLocation을 selectedLocation으로 commit + 패널 닫기
         locationCompleteButton?.addEventListener("click", () => {
             state.selectedLocation = state.pendingLocation;
             syncLocationUI();
+            resetAiReview();
+            scheduleAiReview();
             panel.close();
         });
 

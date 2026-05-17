@@ -80,9 +80,7 @@ values
 
 
 
-
-
-
-
-
-
+UPDATE tbl_member
+SET member_language = NULL
+WHERE tbl_member.member_name = 'admin'
+  AND member_language = '한국어';

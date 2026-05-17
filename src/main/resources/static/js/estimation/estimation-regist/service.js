@@ -66,10 +66,26 @@ const estimationService = (() => {
         return text ? JSON.parse(text) : true;
     };
 
+    const classifyEstimation = async (payload) => {
+        const response = await fetch("/api/ai/estimations/classify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "AI classification error");
+        }
+
+        return response.json();
+    };
+
     return {
         getProducts: getProducts,
         getExperts: getExperts,
         getProductOwners: getProductOwners,
-        writeEstimation: writeEstimation
+        writeEstimation: writeEstimation,
+        classifyEstimation: classifyEstimation
     };
 })();
