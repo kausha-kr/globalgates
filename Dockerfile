@@ -69,7 +69,7 @@ EXPOSE 10000
 # 실행 명령어
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
-
+# push
 
 
 
