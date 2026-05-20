@@ -38,7 +38,7 @@
                    (select count(*) from tbl_bookmark b where b.folder_id = bf.id)
                    +
                    (select count(*) from tbl_news_bookmark nb where nb.folder_id = bf.id)
-               ) as bookmarkCount
+               ) as bookmark_count
         from tbl_bookmark_folder bf
         where bf.member_id = #{memberId}
         order by bf.created_datetime desc
