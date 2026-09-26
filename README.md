@@ -67,6 +67,7 @@ React 전환 후에는 역할을 다음과 같이 나눴습니다.
 현재 브랜치에서는 키 파일을 제거하고 DB, OAuth, JWT, AWS, 지도, 결제 관련 설정을 환경변수로 바꿨습니다. 필요한 변수 이름은 `.env.example`에서 확인할 수 있습니다. 다만 과거 커밋에 들어간 값은 파일을 삭제하는 것만으로 사라지지 않기 때문에, 저장소를 공개하기 전 키 폐기·재발급과 기록 정리가 필요합니다.
 
 이 과정은 [보안 설정 개선 기록](docs/react-refactor/security-remediation.md)에 따로 정리했습니다.
+계정에서 직접 처리해야 하는 항목은 [자격증명 교체 체크리스트](docs/react-refactor/credential-rotation-checklist.md)에 정리했습니다.
 
 ## 실행과 검증
 
