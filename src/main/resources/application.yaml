@@ -1,0 +1,91 @@
+server:
+  port: 10000
+  servlet:
+    session:
+      tracking-modes: cookie
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+    certificate: ${SSL_CERTIFICATE_PATH:file:./config/tls/certificate.pem}
+    certificate-private-key: ${SSL_PRIVATE_KEY_PATH:file:./config/tls/private-key.pem}
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:not-configured}
+    password: ${MAIL_PASSWORD:not-configured}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  #            auth, 사용자 인증(username, password 확인)
+  #            start tls(Transport Layer Security), 메일 내용이 네트워크상에서 암호화되어 전송
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${EC2_HOST}:${PSQL_PORT}/${PSQL_DATABASE}?serverTimezone=Asia/Seoul
+    username: ${PSQL_USERNAME}
+    password: ${PSQL_PASSWORD}
+  session:
+    redis:
+      repository-type: indexed
+      flush-mode: immediate
+  data:
+    redis:
+      host: ${EC2_HOST}
+      port: ${REDIS_PORT}
+
+  cache:
+    type: redis
+
+  profiles:
+    active: local
+    include: oauth
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 10MB
+      max-file-size: 5MB
+      max-request-size: 15MB
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: 5672
+    username: guest
+    password: ${RABBITMQ_PASSWORD:guest}
+
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.app.globalgates.domain; com.app.globalgates.dto;
+  type-handlers-package: com.app.globalgates.mybatis.handler
+  configuration:
+    map-underscore-to-camel-case: true
+
+# openssl rand -base64 32
+jwt:
+  secret: ${JWT_SECRET}
+
+aws:
+  access-key: ${AWS_ACCESS_KEY:not-configured}
+  secret-key: ${AWS_SECRET_KEY:not-configured}
+  s3:
+    bucket-name: ${AWS_BUCKET_NAME}
+  region: ${AWS_REGION}
+
+message:
+  api-key: ${MESSAGE_API_KEY:not-configured}
+  api-secret-key: ${MESSAGE_API_SECRET_KEY:not-configured}
+
+google:
+  maps:
+    api-key: ${GOOGLE_MAPS_API_KEY:not-configured}
+
+bootpay:
+  application-id: ${BOOTPAY_APPLICATION_ID:not-configured}
+  private-key: ${BOOTPAY_PRIVATE_KEY:not-configured}
+  api-base-url: https://api.bootpay.co.kr
+
+ai:
+  fastapi:
+    base-url: ${AI_FASTAPI_BASE_URL:http://127.0.0.1:8000}

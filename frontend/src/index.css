@@ -1,0 +1,6 @@
+:root { font-family: Inter, Pretendard, "Segoe UI", sans-serif; color: #17211d; background: #f4f6f5; font-synthesis: none; text-rendering: optimizeLegibility; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button, input, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid rgba(15, 118, 110, .28); outline-offset: 2px; }

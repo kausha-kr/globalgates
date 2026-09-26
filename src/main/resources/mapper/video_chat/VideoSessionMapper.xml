@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.globalgates.mapper.video_chat.VideoChatMapper">
+    <select id="selectSession">
+        select id,
+               conversation_id,
+               caller_id,
+               receiver_id,
+               started_at,
+               ended_at,
+               duration_sec,
+               created_datetime
+        from tbl_video_session
+        where conversation_id = #{conversationId}
+        limit 1
+    </select>
+
+    <insert id="insertVideoSession" useGeneratedKeys="true" keyProperty="id">
+        insert into tbl_video_session (conversation_id, caller_id, receiver_id)
+        values (#{conversationId}, #{callerId}, #{receiverId})
+    </insert>
+
+    <update id="updateSessionEnd">
+        UPDATE tbl_video_session
+        SET ended_at     = NOW(),
+            duration_sec = EXTRACT(EPOCH FROM (NOW() - started_at))::int
+        WHERE conversation_id = #{conversationId}
+    </update>
+
+</mapper>

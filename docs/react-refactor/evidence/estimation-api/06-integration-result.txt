@@ -1,0 +1,18 @@
+GlobalGates estimation API integration result
+Date: 2026-09-26
+Environment: isolated PostgreSQL 18 cluster on port 55432
+
+[PASS] Spring Boot started on port 10000
+[PASS] requester login returned an access token
+[PASS] expert search returned 1 result
+[PASS] product lookup returned 1 result
+[PASS] estimation write completed
+[PASS] database row: id=1 requester=1 receiver=2 product=1 status=requesting deadline=2026-10-20 tags=2
+[PASS] authenticated requester replaced client-supplied requesterId=999
+[PASS] expert received-list returned estimation id=1 with 2 tags
+[PASS] expert approval API returned true
+[PASS] database status changed to approve
+[PASS] request and approval notifications created: 2
+
+No existing development database was read or modified.
+No JWT, password, or external credential is stored in this evidence file.
